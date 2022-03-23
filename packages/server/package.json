@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "@senses-chat/wechat-server",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Wechat Server",
+  "author": "Simon Liang <simon@x-tech.io>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -18,8 +18,11 @@
     "lint": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {
+    "@senses-chat/wechat-padlocal": "0.1.0",
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/cqrs": "^8.0.3",
     "@nestjs/platform-express": "^8.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
