@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import padlocalConfig from './config';
+import { StorageModule } from '@senses-chat/wechat-db';
+
+import { commandHandlers } from './commands';
 import { PadlocalService } from './padlocal.service';
 
 @Module({
-  imports: [ConfigModule.forFeature(padlocalConfig)],
-  providers: [PadlocalService],
+  imports: [CqrsModule, StorageModule.register()],
+  providers: [PadlocalService, ...commandHandlers],
   exports: [PadlocalService],
 })
 export class PadlocalModule {}

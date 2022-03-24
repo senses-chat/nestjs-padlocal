@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+
 import { PadlocalModule } from '@senses-chat/wechat-padlocal';
 
 import serverConfig from './config';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 const ENV = process.env.NODE_ENV;
 
@@ -18,6 +18,6 @@ const ENV = process.env.NODE_ENV;
     PadlocalModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

@@ -10,6 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PadlocalAccount {
+  id        Int         @id @default(autoincrement())
+  token     String
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime    @default(now()) @db.Timestamptz(6)
+
+  @@index([token])
+}
+
 model KeyValueStorage {
   namespace String
   key       String

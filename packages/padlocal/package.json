@@ -19,6 +19,7 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
+    "@senses-chat/wechat-db": "0.1.0",
     "padlocal-client-ts": "^0.4.1"
   },
   "peerDependencies": {
