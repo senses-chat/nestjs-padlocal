@@ -11,10 +11,10 @@ datasource db {
 }
 
 model PadlocalAccount {
-  id        Int         @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   token     String
-  createdAt DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime    @default(now()) @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([token])
 }
@@ -29,4 +29,31 @@ model KeyValueStorage {
   @@unique([namespace, key])
   @@index([namespace])
   @@index([namespace, key])
+}
+
+model WechatContact {
+  id                    Int     @id @default(autoincrement())
+  sourceUsername        String
+  username              String
+  nickname              String
+  gender                Int
+  avatar                String?
+  signature             String?
+  alias                 String?
+  label                 String?
+  remark                String?
+  city                  String?
+  province              String?
+  country               String?
+  contactaddscene       Int
+  stranger              Boolean
+  encryptusername       String?
+  phoneList             Json?
+  chatroomownerusername String?
+  chatroommaxcount      Int
+  chatroommemberList    Json?
+
+  @@unique([sourceUsername, username])
+  @@index([sourceUsername, username])
+  @@index([username])
 }

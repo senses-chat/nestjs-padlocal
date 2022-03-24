@@ -21,6 +21,8 @@ import {
   PadlocalKickoutCommand,
   PadlocalLoginQRCodeCommand,
   PadlocalLoginSuccessCommand,
+  PadlocalSyncContactCommand,
+  PadlocalNewMessageCommand,
 } from './commands';
 
 @Injectable()
@@ -36,13 +38,13 @@ export class PadlocalService
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    const logger = new Logger(PadlocalService.name);
-
     const cmdBus = this.commandBus;
     const accounts = await this.prisma.padlocalAccount.findMany();
 
     for (const account of accounts) {
-      this.logger.debug(`Connecting to account ${account.token}`);
+      this.logger.debug(
+        `Initializing padlocal account ${account.id} (${account.token})`,
+      );
 
       const client = await PadLocalClient.create(account.token);
       this.clients.set(account.id, client);
@@ -53,17 +55,19 @@ export class PadlocalService
 
       client.on('message', (messageList: Message[]) => {
         for (const message of messageList) {
-          logger.debug('on message: ', JSON.stringify(message.toObject()));
+          cmdBus.execute(
+            new PadlocalNewMessageCommand(account.id, message.toObject()),
+          );
         }
       });
 
       client.on('contact', (contactList: Contact[]) => {
         for (const contact of contactList) {
-          logger.debug('on contact: ', JSON.stringify(contact.toObject()));
+          cmdBus.execute(
+            new PadlocalSyncContactCommand(account.id, contact.toObject()),
+          );
         }
       });
-
-      logger.debug('start login');
 
       await client.api.login(LoginPolicy.DEFAULT, {
         onLoginStart: (loginType: LoginType) => {
@@ -89,21 +93,37 @@ export class PadlocalService
         },
         onSync: (syncEvent: SyncEvent) => {
           for (const contact of syncEvent.getContactList()) {
-            logger.debug(
-              'login on sync contact: ',
-              JSON.stringify(contact.toObject()),
+            cmdBus.execute(
+              new PadlocalSyncContactCommand(account.id, contact.toObject()),
             );
           }
 
           for (const message of syncEvent.getMessageList()) {
-            logger.debug(
-              'login on sync message: ',
-              JSON.stringify(message.toObject()),
+            cmdBus.execute(
+              new PadlocalNewMessageCommand(account.id, message.toObject()),
             );
           }
         },
       });
     }
+  }
+
+  public async syncContacts(accountId: number): Promise<void> {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    await client.api.syncContact({
+      onSync: (contactList: Contact[]) => {
+        for (const contact of contactList) {
+          this.commandBus.execute(
+            new PadlocalSyncContactCommand(accountId, contact.toObject()),
+          );
+        }
+      },
+    });
   }
 
   async onApplicationShutdown(signal?: string) {

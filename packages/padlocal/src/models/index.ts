@@ -1,3 +1,5 @@
+export * from './messages.dto';
+
 export enum LoginStatus {
   LOGIN_START = 'LOGIN_START',
   QRCODE = 'QRCODE',

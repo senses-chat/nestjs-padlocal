@@ -11,9 +11,7 @@ import { PrismaClient, Prisma } from '@prisma/client';
 export class PrismaService extends PrismaClient implements OnModuleInit {
   private logger = new Logger(PrismaService.name);
 
-  constructor(
-    configService: ConfigService,
-  ) {
+  constructor(configService: ConfigService) {
     super(configService.get<Prisma.PrismaClientOptions>('prisma'));
   }
 

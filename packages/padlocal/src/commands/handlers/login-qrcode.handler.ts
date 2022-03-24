@@ -28,7 +28,7 @@ export class PadlocalLoginQRCodeCommandHandler
       this.kvStorage.set(
         `loginQRCode:${command.accountId}`,
         command.qrCodeEvent.imageurl,
-        // command.qrCodeEvent.expireat,
+        command.qrCodeEvent.expireat,
       );
     }
 
