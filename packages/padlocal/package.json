@@ -1,7 +1,7 @@
 {
-  "name": "@senses-chat/wechat-padlocal",
+  "name": "@senses-chat/padlocal-padlocal",
   "version": "0.1.0",
-  "description": "Wechat Padlocal Module",
+  "description": "Padlocal Module",
   "author": "Simon Liang <simon@x-tech.io>",
   "license": "MIT",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
-    "@senses-chat/wechat-db": "0.1.0",
+    "@senses-chat/padlocal-db": "0.1.0",
     "class-transformer": "^0.5.1",
     "date-fns": "^2.28.0",
     "fast-xml-parser": "^4.0.7",

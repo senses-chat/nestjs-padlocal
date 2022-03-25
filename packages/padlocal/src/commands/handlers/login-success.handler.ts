@@ -4,7 +4,7 @@ import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   KeyValueStorageBase,
   PADLOCAL_KV_STORAGE,
-} from '@senses-chat/wechat-db';
+} from '@senses-chat/padlocal-db';
 import { LoginStatus } from '../../models';
 
 import { PadlocalLoginSuccessCommand } from '../login-success.command';

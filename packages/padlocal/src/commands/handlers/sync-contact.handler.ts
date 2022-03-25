@@ -5,7 +5,7 @@ import {
   KeyValueStorageBase,
   PADLOCAL_KV_STORAGE,
   PrismaService,
-} from '@senses-chat/wechat-db';
+} from '@senses-chat/padlocal-db';
 
 import { PadlocalSyncContactCommand } from '../sync-contact.command';
 

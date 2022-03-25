@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
-import { StorageModule } from '@senses-chat/wechat-db';
+import { StorageModule } from '@senses-chat/padlocal-db';
 
 import { commandHandlers } from './commands';
 import { PadlocalController } from './padlocal.controller';

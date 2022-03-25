@@ -1,7 +1,7 @@
 {
-  "name": "@senses-chat/wechat-server",
+  "name": "@senses-chat/padlocal-server",
   "version": "0.0.1",
-  "description": "Wechat Server",
+  "description": "Padlocal Server",
   "author": "Simon Liang <simon@x-tech.io>",
   "private": true,
   "license": "UNLICENSED",
@@ -18,7 +18,7 @@
     "lint": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@senses-chat/wechat-padlocal": "0.1.0",
+    "@senses-chat/padlocal-padlocal": "0.1.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",

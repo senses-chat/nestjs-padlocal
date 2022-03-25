@@ -15,7 +15,7 @@ import {
   SyncEvent,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 
-import { PrismaService } from '@senses-chat/wechat-db';
+import { PrismaService } from '@senses-chat/padlocal-db';
 import {
   PadlocalLoginStartCommand,
   PadlocalKickoutCommand,

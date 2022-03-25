@@ -1,7 +1,7 @@
 {
-  "name": "@senses-chat/wechat-db",
+  "name": "@senses-chat/padlocal-db",
   "version": "0.1.0",
-  "description": "Wechat-related storage",
+  "description": "Padlocal-related storage",
   "author": "Simon Liang <simon@x-tech.io>",
   "license": "MIT",
   "main": "dist/index.js",
