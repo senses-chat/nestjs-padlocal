@@ -54,7 +54,7 @@ export class MessageParserService {
   private parseMessageMetadata(
     message: Message.AsObject,
   ): Omit<PadlocalMessage, 'content'> {
-    const { fromusername, tousername, content } = message;
+    const { fromusername, tousername, content, atList } = message;
 
     const chatroom =
       isRoomId(fromusername) || isIMRoomId(fromusername)
@@ -72,6 +72,7 @@ export class MessageParserService {
       chatroom: chatroom,
       fromUsername: fromUsername,
       toUsername: tousername,
+      atList,
     };
   }
 }

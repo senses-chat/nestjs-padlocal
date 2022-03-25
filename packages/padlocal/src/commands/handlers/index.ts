@@ -3,6 +3,7 @@ import { PadlocalLoginQRCodeCommandHandler } from './login-qrcode.handler';
 import { PadlocalLoginStartCommandHandler } from './login-start.handler';
 import { PadlocalLoginSuccessCommandHandler } from './login-success.handler';
 import { PadlocalNewMessageCommandHandler } from './new-message.handler';
+import { PadlocalNewRawMessageCommandHandler } from './new-raw-message.handler';
 import { PadlocalSyncContactCommandHandler } from './sync-contact.handler';
 
 export const commandHandlers = [
@@ -11,5 +12,6 @@ export const commandHandlers = [
   PadlocalLoginStartCommandHandler,
   PadlocalLoginSuccessCommandHandler,
   PadlocalNewMessageCommandHandler,
+  PadlocalNewRawMessageCommandHandler,
   PadlocalSyncContactCommandHandler,
 ];

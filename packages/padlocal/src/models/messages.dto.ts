@@ -28,6 +28,7 @@ export class PadlocalMessage {
   chatroom?: string;
   fromUsername: string;
   toUsername: string;
+  atList: string[];
 
   @Type(() => PadlocalMessageContent, {
     keepDiscriminatorProperty: true,

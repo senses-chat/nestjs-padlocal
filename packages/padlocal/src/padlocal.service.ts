@@ -22,7 +22,7 @@ import {
   PadlocalLoginQRCodeCommand,
   PadlocalLoginSuccessCommand,
   PadlocalSyncContactCommand,
-  PadlocalNewMessageCommand,
+  PadlocalNewRawMessageCommand,
 } from './commands';
 
 @Injectable()
@@ -56,7 +56,7 @@ export class PadlocalService
       client.on('message', (messageList: Message[]) => {
         for (const message of messageList) {
           cmdBus.execute(
-            new PadlocalNewMessageCommand(account.id, message.toObject()),
+            new PadlocalNewRawMessageCommand(account.id, message.toObject()),
           );
         }
       });
@@ -100,7 +100,7 @@ export class PadlocalService
 
           for (const message of syncEvent.getMessageList()) {
             cmdBus.execute(
-              new PadlocalNewMessageCommand(account.id, message.toObject()),
+              new PadlocalNewRawMessageCommand(account.id, message.toObject()),
             );
           }
         },

@@ -1,9 +1,10 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Message } from 'padlocal-client-ts/dist/proto/padlocal_pb';
+
+import { PadlocalMessage } from '../models';
 
 export class PadlocalNewMessageCommand implements ICommand {
   constructor(
     public readonly accountId: number,
-    public readonly message: Message.AsObject,
+    public readonly message: PadlocalMessage,
   ) {}
 }
