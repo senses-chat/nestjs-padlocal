@@ -23,6 +23,6 @@ export class PadlocalNewRawMessageCommandHandler
         this.parser.parseMessage(command.rawMessage),
       ),
     );
-    this.logger.verbose(`new raw message command: ${JSON.stringify(command)}`);
+    this.logger.debug(`new raw message command: ${JSON.stringify(command)}`);
   }
 }

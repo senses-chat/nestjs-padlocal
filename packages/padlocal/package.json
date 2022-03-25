@@ -1,5 +1,5 @@
 {
-  "name": "@senses-chat/padlocal-padlocal",
+  "name": "@senses-chat/padlocal-module",
   "version": "0.1.0",
   "description": "Padlocal Module",
   "author": "Simon Liang <simon@x-tech.io>",

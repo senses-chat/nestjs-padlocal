@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { PadlocalModule } from '@senses-chat/padlocal-padlocal';
+import { PadlocalModule } from '@senses-chat/padlocal-module';
 
 import serverConfig from './config';
 import { AppController } from './app.controller';
