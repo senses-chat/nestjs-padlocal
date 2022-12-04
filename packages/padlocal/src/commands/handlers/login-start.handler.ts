@@ -21,7 +21,7 @@ export class PadlocalLoginStartCommandHandler
   ) {}
 
   async execute(command: PadlocalLoginStartCommand): Promise<void> {
-    this.kvStorage.set(
+    await this.kvStorage.set(
       `loginStatus:${command.accountId}`,
       LoginStatus.LOGIN_START,
     );

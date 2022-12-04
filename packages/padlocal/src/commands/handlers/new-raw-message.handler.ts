@@ -17,12 +17,12 @@ export class PadlocalNewRawMessageCommandHandler
   ) {}
 
   async execute(command: PadlocalNewRawMessageCommand): Promise<void> {
+    this.logger.debug(`new raw message command: ${JSON.stringify(command)}`);
     this.commandBus.execute(
       new PadlocalNewMessageCommand(
         command.accountId,
         this.parser.parseMessage(command.rawMessage),
       ),
     );
-    this.logger.debug(`new raw message command: ${JSON.stringify(command)}`);
   }
 }

@@ -10,6 +10,6 @@ export class PadlocalNewMessageCommandHandler
   private logger = new Logger(PadlocalNewMessageCommandHandler.name);
 
   async execute(command: PadlocalNewMessageCommand): Promise<void> {
-    this.logger.verbose(`new message command: ${JSON.stringify(command)}`);
+    this.logger.log(`new message command: ${JSON.stringify(command)}`);
   }
 }

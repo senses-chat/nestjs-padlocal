@@ -23,12 +23,12 @@ export class PadlocalLoginSuccessCommandHandler
   ) {}
 
   async execute(command: PadlocalLoginSuccessCommand): Promise<void> {
-    this.kvStorage.set(
+    await this.kvStorage.set(
       `loginStatus:${command.accountId}`,
       LoginStatus.LOGGED_IN,
     );
 
-    this.kvStorage.set(
+    await this.kvStorage.set(
       `loggedInUser:${command.accountId}`,
       command.contactSelf.username,
     );

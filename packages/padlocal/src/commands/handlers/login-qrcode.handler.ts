@@ -22,10 +22,13 @@ export class PadlocalLoginQRCodeCommandHandler
   ) {}
 
   async execute(command: PadlocalLoginQRCodeCommand): Promise<void> {
-    this.kvStorage.set(`loginStatus:${command.accountId}`, LoginStatus.QRCODE);
+    await this.kvStorage.set(
+      `loginStatus:${command.accountId}`,
+      LoginStatus.QRCODE,
+    );
 
     if (command.qrCodeEvent.status === QRCodeStatus.NEW) {
-      this.kvStorage.set(
+      await this.kvStorage.set(
         `loginQRCode:${command.accountId}`,
         command.qrCodeEvent.imageurl,
         command.qrCodeEvent.expireat,

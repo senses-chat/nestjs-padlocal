@@ -21,7 +21,7 @@ export class PadlocalKickoutCommandHandler
   ) {}
 
   async execute(command: PadlocalKickoutCommand): Promise<void> {
-    this.kvStorage.set(
+    await this.kvStorage.set(
       `loginStatus:${command.accountId}`,
       LoginStatus.LOGGED_OUT,
     );
