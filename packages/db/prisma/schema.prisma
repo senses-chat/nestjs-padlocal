@@ -57,3 +57,23 @@ model WechatContact {
   @@index([sourceUsername, username])
   @@index([username])
 }
+
+model WechatFriendshipRequest {
+  id                    Int     @id @default(autoincrement())
+  sourceUsername        String
+  username              String
+  encryptUsername       String
+  nickname              String
+  ticket                String
+  requestMessage        String
+  scene                 Int
+  avatar                String?
+  gender                Int?
+  alias                 String?
+  city                  String?
+  province              String?
+  country               String?
+  payload               Json
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+}

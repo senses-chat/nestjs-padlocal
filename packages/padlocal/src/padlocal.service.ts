@@ -46,7 +46,7 @@ export class PadlocalService
         `Initializing padlocal account ${account.id} (${account.token})`,
       );
 
-      const client = await PadLocalClient.create(account.token);
+      const client = await PadLocalClient.create(account.token, true);
       this.clients.set(account.id, client);
 
       client.on('kickout', (kickoutEvent: KickOutEvent) => {

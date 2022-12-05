@@ -35,14 +35,15 @@ export enum PadlocalMessageContentType {
   APP = 'APP', // TODO: breakdown further
   REFER = 'REFER', // 引用回复
   CHAT_HISTORY = 'CHAT_HISTORY',
+  FRIENDSHIP_REQUEST = 'FRIENDSHIP_REQUEST',
 }
 
 export abstract class PadlocalMessageContent {
   type: PadlocalMessageContentType;
+  messageType: PadlocalMessageType;
 }
 
 export class PadlocalUnknownMessageContent extends PadlocalMessageContent {
-  messageType: PadlocalMessageType;
   payload: string;
 }
 
@@ -63,6 +64,22 @@ export class PadlocalReferMessageContent extends PadlocalTextMessageContent {
   text: string;
   referredMessageId: string;
   referredContent: PadlocalMessageContent;
+}
+
+export class PadlocalFriendshipRequestMessageContent extends PadlocalMessageContent {
+  fromUsername: string;
+  encryptUsername: string;
+  nickname: string;
+  ticket: string;
+  requestMessage: string;
+  scene: number;
+  avatar?: string;
+  gender?: number;
+  alias?: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  payload: any;
 }
 
 export class PadlocalMessage {

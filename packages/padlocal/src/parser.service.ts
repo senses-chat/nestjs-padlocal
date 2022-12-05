@@ -3,10 +3,12 @@ import { plainToInstance } from 'class-transformer';
 import { fromUnixTime } from 'date-fns';
 import { XMLParser } from 'fast-xml-parser';
 import { Message } from 'padlocal-client-ts/dist/proto/padlocal_pb';
+import he from 'he';
 
 import {
   PadlocalAppMessageContent,
   PadlocalChatHistoryMessageContent,
+  PadlocalFriendshipRequestMessageContent,
   PadlocalMessage,
   PadlocalMessageContent,
   PadlocalMessageContentType,
@@ -20,14 +22,18 @@ import { isIMRoomId, isRoomId } from './utils';
 @Injectable()
 export class MessageParserService {
   private readonly logger = new Logger(MessageParserService.name);
-  private readonly parser = new XMLParser();
+  private readonly parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "",
+    attributesGroupName: "$",
+  });
 
   public parseMessage(message: Message.AsObject): PadlocalMessage {
-    const messagePayload = this.parseMessageMetadata(message);
+    const messageMetadata = this.parseMessageMetadata(message);
     const content = this.parseMessageContent(message);
 
     return plainToInstance(PadlocalMessage, {
-      ...messagePayload,
+      ...messageMetadata,
       content,
     });
   }
@@ -51,6 +57,9 @@ export class MessageParserService {
         });
       case PadlocalMessageType.App:
         return this.parseAppMessageContent(payload);
+      case PadlocalMessageType.VerifyMsg:
+      case PadlocalMessageType.VerifyMsgEnterprise:
+        return this.parseFriendshipVerifyMessageContent(payload);
       default:
         return plainToInstance(PadlocalUnknownMessageContent, {
           type: PadlocalMessageContentType.UNKNOWN,
@@ -60,8 +69,31 @@ export class MessageParserService {
     }
   }
 
+  private parseFriendshipVerifyMessageContent(payload: string): PadlocalMessageContent {
+    const msgXml = this.parser.parse(payload);
+
+    return plainToInstance(PadlocalFriendshipRequestMessageContent, {
+      type: PadlocalMessageContentType.FRIENDSHIP_REQUEST,
+      messageType: PadlocalMessageType.VerifyMsg,
+      fromUsername: msgXml.msg.$.fromusername,
+      encryptUsername: msgXml.msg.$.encryptusername,
+      nickname: msgXml.msg.$.fromnickname,
+      ticket: msgXml.msg.$.ticket,
+      requestMessage: msgXml.msg.$.content,
+      scene: Number(msgXml.msg.$.scene),
+      avatar: msgXml.msg.$.bigheadimgurl,
+      gender: Number(msgXml.msg.$.sex),
+      alias: msgXml.msg.$.alias,
+      city: msgXml.msg.$.city,
+      province: msgXml.msg.$.province,
+      country: msgXml.msg.$.country,
+      payload: msgXml,
+    });
+  }
+
   private parseAppMessageContent(payload: string): PadlocalMessageContent {
     // this.logger.debug(payload);
+    payload = he.decode(payload);
     const appXml = this.parser.parse(payload);
 
     const appMessageType = Number(appXml?.msg?.appmsg?.type);
