@@ -9,7 +9,7 @@ export default registerAs(
         db: {
           url:
             process.env.DATABASE_URL ||
-            'postgresql://chatop:chatOperator@localhost:5432/chat-operator',
+            'postgresql://chatop:chatOperator@localhost:5432/wechat',
         },
       },
     } as Prisma.PrismaClientOptions),
