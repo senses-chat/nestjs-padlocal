@@ -1,4 +1,5 @@
 export * from './messages.dto';
+export * from './request-payloads.dto';
 
 export enum LoginStatus {
   LOGIN_START = 'LOGIN_START',

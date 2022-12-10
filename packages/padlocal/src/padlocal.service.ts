@@ -129,7 +129,8 @@ export class PadlocalService
     });
   }
 
-  public async getFriendshipRequests(accountId: number): Promise<WechatFriendshipRequest[]> {
+  // TODO: output type
+  public async getFriendshipRequests(accountId: number): Promise<any[]> {
     const username = await this.getLoggedInWechatUsername(accountId);
 
     if (!username) {
@@ -137,10 +138,76 @@ export class PadlocalService
     }
 
     return this.prisma.wechatFriendshipRequest.findMany({
+      select: {
+        id: true,
+        username: true,
+        nickname: true,
+        requestMessage: true,
+        scene: true,
+        avatar: true,
+        gender: true,
+        alias: true,
+        city: true,
+        province: true,
+        country: true,
+        createdAt: true,
+      },
       where: {
         sourceUsername: username,
       },
     });
+  }
+
+  public async approveFriendshipRequest(accountId: number, friendshipRequestId: number): Promise<void> {
+    const username = await this.getLoggedInWechatUsername(accountId);
+
+    if (!username) {
+      throw new Error(`Logged in user for account ${accountId} not found`);
+    }
+
+    const friendshipRequest = await this.prisma.wechatFriendshipRequest.findFirst({
+      where: {
+        id: friendshipRequestId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!friendshipRequest || friendshipRequest.sourceUsername !== username) {
+      throw new Error('Invalid friendship request');
+    }
+
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    await client.api.acceptUser(
+      friendshipRequest.username,
+      friendshipRequest.ticket,
+      friendshipRequest.encryptUsername,
+      friendshipRequest.scene,
+    );
+
+    // remove all friendship requests with the same person
+    await this.prisma.wechatFriendshipRequest.deleteMany({
+      where: {
+        sourceUsername: friendshipRequest.sourceUsername,
+        username: friendshipRequest.username,
+      },
+    });
+  }
+
+  public async updateContactRemark(accountId: number, username: string, remark: string): Promise<void> {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    return client.api.updateContactRemark(username, remark);
   }
 
   public async getLoggedInWechatUsername(accountId: number): Promise<string> {
