@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   Logger,
   OnApplicationBootstrap,
@@ -15,7 +16,7 @@ import {
   SyncEvent,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 
-import { PrismaService } from '@senses-chat/padlocal-db';
+import { KeyValueStorageBase, PADLOCAL_KV_STORAGE, PrismaService, WechatFriendshipRequest } from '@senses-chat/padlocal-db';
 import {
   PadlocalLoginStartCommand,
   PadlocalKickoutCommand,
@@ -33,6 +34,8 @@ export class PadlocalService
   private clients = new Map<number, PadLocalClient>();
 
   constructor(
+    @Inject(PADLOCAL_KV_STORAGE)
+    private readonly kvStorage: KeyValueStorageBase,
     private readonly prisma: PrismaService,
     private readonly commandBus: CommandBus,
   ) {}
@@ -124,6 +127,26 @@ export class PadlocalService
         }
       },
     });
+  }
+
+  public async getFriendshipRequests(accountId: number): Promise<WechatFriendshipRequest[]> {
+    const username = await this.getLoggedInWechatUsername(accountId);
+
+    if (!username) {
+      throw new Error(`Logged in user for account ${accountId} not found`);
+    }
+
+    return this.prisma.wechatFriendshipRequest.findMany({
+      where: {
+        sourceUsername: username,
+      },
+    });
+  }
+
+  public async getLoggedInWechatUsername(accountId: number): Promise<string> {
+    return this.kvStorage.get(
+      `loggedInUser:${accountId}`,
+    );
   }
 
   async onApplicationShutdown(signal?: string) {

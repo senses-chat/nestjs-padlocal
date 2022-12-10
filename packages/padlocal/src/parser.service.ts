@@ -93,6 +93,7 @@ export class MessageParserService {
 
   private parseAppMessageContent(payload: string): PadlocalMessageContent {
     // this.logger.debug(payload);
+    payload = payload.replace('&lt;?xml version=\"1.0\"?&gt;\n', '');
     payload = he.decode(payload);
     const appXml = this.parser.parse(payload);
 
