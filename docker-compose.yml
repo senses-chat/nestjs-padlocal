@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "6379:6379"
+  postgresql:
+    image: postgres
+    container_name: postgresql
+    environment:
+        POSTGRES_DB: wechat
+        POSTGRES_USER: "chatop"
+        POSTGRES_PASSWORD: "chatOperator"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
