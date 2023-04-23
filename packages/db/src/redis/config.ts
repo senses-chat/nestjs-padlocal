@@ -10,7 +10,7 @@ export default registerAs(
       config: {
         host: process.env.REDIS_HOST || 'localhost',
         port: Number(process.env.REDIS_PORT || 6379),
-        password: process.env.REDIS_PASSWORD || 'chatOperator',
+        password: process.env.REDIS_PASSWORD || 'padlocalrocks',
         db: Number(process.env.REDIS_WECHAT_DB || 0),
       },
     } as RedisModuleOptions),
