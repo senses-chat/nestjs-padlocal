@@ -1,6 +1,6 @@
 import { BullModule } from '@nestjs/bullmq';
 import { forwardRef, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { StorageModule } from '@senses-chat/padlocal-db';
 
 import { processors } from './processor';
