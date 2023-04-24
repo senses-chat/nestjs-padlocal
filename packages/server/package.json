@@ -18,12 +18,13 @@
     "lint": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@senses-chat/padlocal-module": "0.1.0",
-    "@nestjs/common": "^8.0.0",
+    "@nestjs/bullmq": "^1.1.0",
+    "@nestjs/common": "^8.3.0",
     "@nestjs/config": "^2.0.0",
-    "@nestjs/core": "^8.0.0",
-    "@nestjs/cqrs": "^8.0.3",
+    "@nestjs/core": "^8.3.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@senses-chat/padlocal-module": "0.1.0",
+    "bullmq": "^3.10.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"

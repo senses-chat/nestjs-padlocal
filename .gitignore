@@ -58,3 +58,8 @@ coverage
 
 # typescript
 *.tsbuildinfo
+
+# data
+data
+
+*.sh

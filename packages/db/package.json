@@ -19,15 +19,14 @@
   },
   "dependencies": {
     "@liaoliaots/nestjs-redis": "^7.0.0",
-    "@prisma/client": "^3.11.0",
+    "@nestjs/config": "^2.0.0",
+    "@prisma/client": "^4.13.0",
     "ioredis": "^4.28.5",
     "minio": "^7.0.26",
-    "prisma": "^3.11.0"
+    "prisma": "^4.13.0"
   },
   "peerDependencies": {
     "@nestjs/common": "^8.3.0",
-    "@nestjs/config": "^1.1.5",
-    "@nestjs/cqrs": "^8.0.2",
     "class-transformer": "^0.5.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0"

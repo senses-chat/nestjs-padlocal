@@ -5,7 +5,6 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import { KickOutEvent, PadLocalClient } from 'padlocal-client-ts';
 import {
   Contact,
@@ -16,15 +15,12 @@ import {
   SyncEvent,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 
-import { KeyValueStorageBase, PADLOCAL_KV_STORAGE, PrismaService, WechatFriendshipRequest } from '@senses-chat/padlocal-db';
 import {
-  PadlocalLoginStartCommand,
-  PadlocalKickoutCommand,
-  PadlocalLoginQRCodeCommand,
-  PadlocalLoginSuccessCommand,
-  PadlocalSyncContactCommand,
-  PadlocalNewRawMessageCommand,
-} from './commands';
+  KeyValueStorageBase,
+  PADLOCAL_KV_STORAGE,
+  PrismaService,
+} from '@senses-chat/padlocal-db';
+import { QueueService } from './queue/queue.service';
 
 @Injectable()
 export class PadlocalService
@@ -37,77 +33,90 @@ export class PadlocalService
     @Inject(PADLOCAL_KV_STORAGE)
     private readonly kvStorage: KeyValueStorageBase,
     private readonly prisma: PrismaService,
-    private readonly commandBus: CommandBus,
+    private readonly queueService: QueueService,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    const cmdBus = this.commandBus;
-    const accounts = await this.prisma.padlocalAccount.findMany();
+    try {
+      const accounts = await this.prisma.padlocalAccount.findMany();
 
-    for (const account of accounts) {
-      this.logger.debug(
-        `Initializing padlocal account ${account.id} (${account.token})`,
-      );
+      for (const account of accounts) {
+        this.logger.debug(
+          `Initializing padlocal account ${account.id} (${account.token})`,
+        );
 
-      const client = await PadLocalClient.create(account.token, true);
-      this.clients.set(account.id, client);
+        const client = await PadLocalClient.create(account.token, true);
+        this.clients.set(account.id, client);
 
-      client.on('kickout', (kickoutEvent: KickOutEvent) => {
-        cmdBus.execute(new PadlocalKickoutCommand(account.id, kickoutEvent));
-      });
+        client.on('kickout', (kickoutEvent: KickOutEvent) => {
+          this.queueService.add('kickout', {
+            accountId: account.id,
+            kickoutEvent,
+          });
+        });
 
-      client.on('message', (messageList: Message[]) => {
-        for (const message of messageList) {
-          cmdBus.execute(
-            new PadlocalNewRawMessageCommand(account.id, message.toObject()),
-          );
-        }
-      });
-
-      client.on('contact', (contactList: Contact[]) => {
-        for (const contact of contactList) {
-          cmdBus.execute(
-            new PadlocalSyncContactCommand(account.id, contact.toObject()),
-          );
-        }
-      });
-
-      await client.api.login(LoginPolicy.DEFAULT, {
-        onLoginStart: (loginType: LoginType) => {
-          cmdBus.execute(new PadlocalLoginStartCommand(account.id, loginType));
-        },
-        onOneClickEvent: (oneClickEvent: QRCodeEvent) => {
-          cmdBus.execute(
-            new PadlocalLoginQRCodeCommand(
-              account.id,
-              oneClickEvent.toObject(),
-            ),
-          );
-        },
-        onQrCodeEvent: (qrCodeEvent: QRCodeEvent) => {
-          cmdBus.execute(
-            new PadlocalLoginQRCodeCommand(account.id, qrCodeEvent.toObject()),
-          );
-        },
-        onLoginSuccess: (contact: Contact) => {
-          cmdBus.execute(
-            new PadlocalLoginSuccessCommand(account.id, contact.toObject()),
-          );
-        },
-        onSync: (syncEvent: SyncEvent) => {
-          for (const contact of syncEvent.getContactList()) {
-            cmdBus.execute(
-              new PadlocalSyncContactCommand(account.id, contact.toObject()),
-            );
+        client.on('message', (messageList: Message[]) => {
+          for (const message of messageList) {
+            this.queueService.add('newRawMessage', {
+              accountId: account.id,
+              rawMessage: message.toObject(),
+            });
           }
+        });
 
-          for (const message of syncEvent.getMessageList()) {
-            cmdBus.execute(
-              new PadlocalNewRawMessageCommand(account.id, message.toObject()),
-            );
+        client.on('contact', (contactList: Contact[]) => {
+          for (const contact of contactList) {
+            this.queueService.add('syncContact', {
+              accountId: account.id,
+              contact: contact.toObject(),
+            });
           }
-        },
-      });
+        });
+
+        await client.api.login(LoginPolicy.DEFAULT, {
+          onLoginStart: (loginType: LoginType) => {
+            this.queueService.add('loginStart', {
+              accountId: account.id,
+              loginType,
+            });
+          },
+          onOneClickEvent: (oneClickEvent: QRCodeEvent) => {
+            this.queueService.add('loginQrcode', {
+              accountId: account.id,
+              qrCodeEvent: oneClickEvent.toObject(),
+            });
+          },
+          onQrCodeEvent: (qrCodeEvent: QRCodeEvent) => {
+            this.queueService.add('loginQrcode', {
+              accountId: account.id,
+              qrCodeEvent: qrCodeEvent.toObject(),
+            });
+          },
+          onLoginSuccess: (contact: Contact) => {
+            this.queueService.add('loginSuccess', {
+              accountId: account.id,
+              contactSelf: contact.toObject(),
+            });
+          },
+          onSync: (syncEvent: SyncEvent) => {
+            for (const contact of syncEvent.getContactList()) {
+              this.queueService.add('syncContact', {
+                accountId: account.id,
+                contact: contact.toObject(),
+              });
+            }
+
+            for (const message of syncEvent.getMessageList()) {
+              this.queueService.add('newRawMessage', {
+                accountId: account.id,
+                rawMessage: message.toObject(),
+              });
+            }
+          },
+        });
+      }
+    } catch (err) {
+      console.log('==============err');
     }
   }
 
@@ -121,9 +130,10 @@ export class PadlocalService
     await client.api.syncContact({
       onSync: (contactList: Contact[]) => {
         for (const contact of contactList) {
-          this.commandBus.execute(
-            new PadlocalSyncContactCommand(accountId, contact.toObject()),
-          );
+          this.queueService.add('syncContact', {
+            accountId,
+            contact: contact.toObject(),
+          });
         }
       },
     });
@@ -158,21 +168,25 @@ export class PadlocalService
     });
   }
 
-  public async approveFriendshipRequest(accountId: number, friendshipRequestId: number): Promise<void> {
+  public async approveFriendshipRequest(
+    accountId: number,
+    friendshipRequestId: number,
+  ): Promise<void> {
     const username = await this.getLoggedInWechatUsername(accountId);
 
     if (!username) {
       throw new Error(`Logged in user for account ${accountId} not found`);
     }
 
-    const friendshipRequest = await this.prisma.wechatFriendshipRequest.findFirst({
-      where: {
-        id: friendshipRequestId,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const friendshipRequest =
+      await this.prisma.wechatFriendshipRequest.findFirst({
+        where: {
+          id: friendshipRequestId,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
 
     if (!friendshipRequest || friendshipRequest.sourceUsername !== username) {
       throw new Error('Invalid friendship request');
@@ -200,7 +214,11 @@ export class PadlocalService
     });
   }
 
-  public async updateContactRemark(accountId: number, username: string, remark: string): Promise<void> {
+  public async updateContactRemark(
+    accountId: number,
+    username: string,
+    remark: string,
+  ): Promise<void> {
     const client = this.clients.get(accountId);
 
     if (!client) {
@@ -211,9 +229,7 @@ export class PadlocalService
   }
 
   public async getLoggedInWechatUsername(accountId: number): Promise<string> {
-    return this.kvStorage.get(
-      `loggedInUser:${accountId}`,
-    );
+    return this.kvStorage.get(`loggedInUser:${accountId}`);
   }
 
   async onApplicationShutdown(signal?: string) {

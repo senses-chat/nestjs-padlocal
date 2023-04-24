@@ -77,3 +77,27 @@ model WechatFriendshipRequest {
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
 }
+
+model rawMessage {
+  id                    String  @id
+  accountId             Int
+  type Int
+  createtime            Int
+  fromusername          String
+  tousername            String
+  content               String
+  pushcontent           String
+  binarypayload         String
+  atList                String[]
+}
+
+model newMessage {
+  accountId             Int
+  id                    String  @id
+  createTime            String
+  chatroom              String
+  fromUsername          String
+  toUsername            String
+  atList                String[]
+  content               Json
+}
