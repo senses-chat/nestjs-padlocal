@@ -10,8 +10,6 @@
   - 兼容S3（AWS、腾讯云）的对象存储（可以通过minio本地部署或者对接阿里云）
 - 更简单的使用和扩展
   - 直接使用BullMQ对接消息队列
-  - 基于CQRS架构做二次开发
-  - （TODO）对接[OneBot](https://onebot.dev)标准
   - Web UI
 
 ## 安装

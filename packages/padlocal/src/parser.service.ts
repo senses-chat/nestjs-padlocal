@@ -24,8 +24,8 @@ export class MessageParserService {
   private readonly logger = new Logger(MessageParserService.name);
   private readonly parser = new XMLParser({
     ignoreAttributes: false,
-    attributeNamePrefix: "",
-    attributesGroupName: "$",
+    attributeNamePrefix: '',
+    attributesGroupName: '$',
   });
 
   public parseMessage(message: Message.AsObject): PadlocalMessage {
@@ -69,7 +69,9 @@ export class MessageParserService {
     }
   }
 
-  private parseFriendshipVerifyMessageContent(payload: string): PadlocalMessageContent {
+  private parseFriendshipVerifyMessageContent(
+    payload: string,
+  ): PadlocalMessageContent {
     const msgXml = this.parser.parse(payload);
 
     return plainToInstance(PadlocalFriendshipRequestMessageContent, {
@@ -93,7 +95,7 @@ export class MessageParserService {
 
   private parseAppMessageContent(payload: string): PadlocalMessageContent {
     // this.logger.debug(payload);
-    payload = payload.replace('&lt;?xml version=\"1.0\"?&gt;\n', '');
+    payload = payload.replace('&lt;?xml version="1.0"?&gt;\n', '');
     payload = he.decode(payload);
     const appXml = this.parser.parse(payload);
 
