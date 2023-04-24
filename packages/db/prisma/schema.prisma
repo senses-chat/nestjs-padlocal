@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -88,7 +89,7 @@ model rawMessage {
   content               String
   pushcontent           String
   binarypayload         String
-  atList                String[] 
+  atList                String[]
 }
 
 model newMessage {
