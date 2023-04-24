@@ -11,6 +11,7 @@ import { QUEUES } from './config';
 @Module({
   imports: [
     StorageModule.register(),
+    forwardRef(() => PadlocalModule),
     ConfigModule,
     BullModule.registerQueue(...QUEUES.queuesArray),
   ],
