@@ -1,5 +1,6 @@
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { PadlocalModule } from '@senses-chat/padlocal-module';
 
@@ -14,6 +15,13 @@ const ENV = process.env.NODE_ENV;
       // mimic behaviors from nextjs
       envFilePath: [`.env.${ENV}.local`, `.env.${ENV}`, `.env.local`, '.env'],
       load: [serverConfig],
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        connection: configService.get('redis'),
+      }),
+      inject: [ConfigService],
     }),
     PadlocalModule,
   ],

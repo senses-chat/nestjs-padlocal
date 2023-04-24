@@ -13,13 +13,6 @@ import { QUEUES } from '../config/queues';
     StorageModule.register(),
     forwardRef(() => PadlocalModule),
     ConfigModule,
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        connection: configService.get('redis'),
-      }),
-      inject: [ConfigService],
-    }),
     BullModule.registerQueue(...QUEUES.queuesArray),
   ],
   providers: [QueueService, ...processors],
