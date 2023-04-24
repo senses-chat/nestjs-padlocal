@@ -2,6 +2,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { QueueModule } from 'src/queue';
 import { PadlocalModule } from 'src/padlocal';
 
 import serverConfig from './config';
@@ -23,6 +24,7 @@ const ENV = process.env.NODE_ENV;
       }),
       inject: [ConfigService],
     }),
+    QueueModule,
     PadlocalModule,
   ],
   controllers: [AppController],
