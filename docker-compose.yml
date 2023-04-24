@@ -22,8 +22,8 @@ services:
     restart: always
     ports:
       - 6379:6379
-    environment:
-      # - REDIS_PASSWORD=padlocalrocks
+    # environment:
+    #   - REDIS_PASSWORD=padlocalrocks
     volumes:
       - redis:/data
 
