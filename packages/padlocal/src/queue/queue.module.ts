@@ -2,10 +2,12 @@ import { BullModule } from '@nestjs/bullmq';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StorageModule } from '@senses-chat/padlocal-db';
-import { PadlocalModule } from '../padlocal.module';
-import { processor } from './processor';
+
+import { processors } from './processor';
 import { QueueService } from './queue.service';
-import { QUEUES } from '../config/config';
+import { PadlocalModule } from '../padlocal.module';
+import { QUEUES } from '../config/queues';
+
 @Module({
   imports: [
     StorageModule.register(),
@@ -20,7 +22,7 @@ import { QUEUES } from '../config/config';
     }),
     BullModule.registerQueue(...QUEUES.queuesArray),
   ],
-  providers: [QueueService, ...processor],
+  providers: [QueueService, ...processors],
   exports: [QueueService],
 })
 export class QueueModule {}
