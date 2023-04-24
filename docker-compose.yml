@@ -17,12 +17,13 @@ services:
 
   redis:
     image: redis:6
-    command: redis-server --appendonly yes --requirepass padlocalrocks
+    # command: redis-server --appendonly yes --requirepass padlocalrocks
+    command: redis-server --appendonly yes
     restart: always
     ports:
       - 6379:6379
     environment:
-      - REDIS_PASSWORD=padlocalrocks
+      # - REDIS_PASSWORD=padlocalrocks
     volumes:
       - redis:/data
 
