@@ -1,10 +1,7 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject, Logger } from '@nestjs/common';
-import {
-  KeyValueStorageBase,
-  PADLOCAL_KV_STORAGE,
-} from 'src/db';
+import { KeyValueStorageBase, PADLOCAL_KV_STORAGE } from 'src/db';
 import { LoginStatus } from '../../padlocal/models';
 import { QueueService } from '../queue.service';
 

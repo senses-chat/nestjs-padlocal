@@ -63,3 +63,5 @@ coverage
 data
 
 *.sh
+
+.env.*
