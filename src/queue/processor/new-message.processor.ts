@@ -27,7 +27,7 @@ export class NewMessageProcessor extends WorkerHost {
     }
 
     await this.prisma.newMessage.create({
-      data: { accountId: job.data.accountId, ...job.data.message },
+      data: { ...job.data.message },
     });
 
     this.logger.log(`new message process: ${JSON.stringify(job.data)}`);

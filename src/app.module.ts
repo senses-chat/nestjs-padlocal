@@ -20,7 +20,10 @@ const ENV = process.env.NODE_ENV;
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        connection: configService.get('redis'),
+        connection: {
+          ...configService.get('redis'),
+          enableOfflineQueue: false,
+        },
       }),
       inject: [ConfigService],
     }),

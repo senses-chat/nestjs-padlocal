@@ -36,11 +36,13 @@ export enum PadlocalMessageContentType {
   REFER = 'REFER', // 引用回复
   CHAT_HISTORY = 'CHAT_HISTORY',
   FRIENDSHIP_REQUEST = 'FRIENDSHIP_REQUEST',
+  IMAGE = 'IMAGE',
 }
 
 export abstract class PadlocalMessageContent {
   type: PadlocalMessageContentType;
   messageType: PadlocalMessageType;
+  binarypayload?: string;
 }
 
 export class PadlocalUnknownMessageContent extends PadlocalMessageContent {
@@ -49,6 +51,11 @@ export class PadlocalUnknownMessageContent extends PadlocalMessageContent {
 
 export class PadlocalTextMessageContent extends PadlocalMessageContent {
   text: string;
+}
+
+export class PadlocalImageMessageContent extends PadlocalMessageContent {
+  content: string;
+  binarypayload: string;
 }
 
 export class PadlocalAppMessageContent extends PadlocalMessageContent {

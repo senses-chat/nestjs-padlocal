@@ -80,9 +80,9 @@ model WechatFriendshipRequest {
 
 model rawMessage {
   id                    String  @id
-  accountId             Int
-  type Int
+  type                  Int
   createtime            Int
+  loggedInUsername      String
   fromusername          String
   tousername            String
   content               String
@@ -92,10 +92,9 @@ model rawMessage {
 }
 
 model newMessage {
-  accountId             Int
   id                    String  @id
   createTime            String
-  chatroom              String
+  chatroom              String?
   fromUsername          String
   toUsername            String
   atList                String[]

@@ -1,10 +1,7 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject, Logger } from '@nestjs/common';
-import {
-  KeyValueStorageBase,
-  PADLOCAL_KV_STORAGE,
-} from 'src/db';
+import { KeyValueStorageBase, PADLOCAL_KV_STORAGE } from 'src/db';
 import { QRCodeStatus } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 import { LoginStatus } from '../../padlocal/models';
 
