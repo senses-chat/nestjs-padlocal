@@ -26,8 +26,10 @@ export class NewMessageProcessor extends WorkerHost {
       });
     }
 
-    await this.prisma.newMessage.create({
-      data: { ...job.data.message },
+    await this.prisma.newMessage.upsert({
+      where: { id: job.data.message.id },
+      create: { ...job.data.message },
+      update: { ...job.data.message },
     });
 
     this.logger.log(`new message process: ${JSON.stringify(job.data)}`);
