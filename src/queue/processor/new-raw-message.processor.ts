@@ -2,7 +2,12 @@ import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject, Logger } from '@nestjs/common';
 import { MessageParserService } from '../../padlocal/parser.service';
-import { KeyValueStorageBase, MinioService, PADLOCAL_KV_STORAGE, PrismaService } from 'src/db';
+import {
+  KeyValueStorageBase,
+  MinioService,
+  PADLOCAL_KV_STORAGE,
+  PrismaService,
+} from 'src/db';
 import { QueueService } from '../queue.service';
 import { PadlocalMessageContentType } from 'src/padlocal/models';
 import { ConfigService } from '@nestjs/config';
@@ -18,7 +23,6 @@ export class NewRawMessageProcessor extends WorkerHost {
     private readonly configService: ConfigService,
     @Inject(PADLOCAL_KV_STORAGE)
     private readonly kvStorage: KeyValueStorageBase,
-
   ) {
     super();
   }
