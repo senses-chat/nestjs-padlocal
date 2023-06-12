@@ -34,8 +34,10 @@ export class NewRawMessageProcessor extends WorkerHost {
       `loggedInUser:${job.data.accountId}`,
     );
 
-    await this.prisma.rawMessage.create({
-      data: { loggedInUsername, ...job.data.rawMessage },
+    await this.prisma.rawMessage.upsert({
+      where: { id: job.data.rawMessage.id },
+      create: { loggedInUsername, ...job.data.rawMessage },
+      update: { loggedInUsername, ...job.data.rawMessage },
     });
 
     const newMessage = this.parser.parseMessage(job.data.rawMessage);
