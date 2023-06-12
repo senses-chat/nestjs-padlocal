@@ -37,11 +37,11 @@ export class NewRawMessageProcessor extends WorkerHost {
     const newMessage = this.parser.parseMessage(job.data.rawMessage);
 
     if (newMessage.content.type === PadlocalMessageContentType.IMAGE) {
-      const binarypayloadName = `${job.data.accountId}_${job.data.rawMessage.id}`;
+      const binarypayloadName = `${loggedInUsername}/${job.data.rawMessage.id}.jpg`;
 
       await this.minioSvc.putObject(
         this.configService.get('minio.bucketName'),
-        binarypayloadName,
+        `padlocal/${binarypayloadName}`,
         newMessage.content.binarypayload,
       );
 
