@@ -4,6 +4,7 @@ export default registerAs('minio', () => ({
     endPoint: process.env.MINIO_ENDPOINT || 'localhost',
     accessKey: process.env.MINIO_ACCESS_KEY || 'minio',
     secretKey: process.env.MINIO_SECRET_KEY || 'minio123',
+    useSSL: process.env.MINIO_SSL === 'true',
     region: process.env.MINIO_REGION || 'us-east-1',
   },
   bucketName: process.env.BUCKET_NAME || 'padlocal',
