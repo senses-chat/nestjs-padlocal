@@ -9,13 +9,16 @@ import {
   PrismaService,
 } from 'src/db';
 import { QueueService } from '../queue.service';
+import { PadlocalService } from '../../padlocal/padlocal.service';
 import { PadlocalMessageContentType } from 'src/padlocal/models';
+import { ImageType } from "padlocal-client-ts/dist/proto/padlocal_pb";
 import { ConfigService } from '@nestjs/config';
 
 @Processor('newRawMessage')
 export class NewRawMessageProcessor extends WorkerHost {
   private readonly logger = new Logger(NewRawMessageProcessor.name);
   constructor(
+    private readonly padlocalService: PadlocalService,
     private readonly parser: MessageParserService,
     private readonly prisma: PrismaService,
     private readonly queueService: QueueService,
@@ -42,13 +45,14 @@ export class NewRawMessageProcessor extends WorkerHost {
 
     const newMessage = this.parser.parseMessage(job.data.rawMessage);
 
-    if (newMessage.content.type === PadlocalMessageContentType.IMAGE) {
+    if (newMessage.content.type === PadlocalMessageContentType.IMAGE && newMessage.content.binarypayload) {
       const binarypayloadName = `${loggedInUsername}/${job.data.rawMessage.id}.jpg`;
+      const imageHD = await this.padlocalService.getMessageImage(job.data.accountId, job.data.rawMessage.content, job.data.rawMessage.tousername, ImageType.HD)
 
       await this.minioSvc.putObject(
         this.configService.get('minio.bucketName'),
         `padlocal/${binarypayloadName}`,
-        newMessage.content.binarypayload,
+        new Buffer(imageHD.imageData)
       );
 
       newMessage.content.binarypayload = binarypayloadName;
