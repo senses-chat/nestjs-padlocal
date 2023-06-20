@@ -13,6 +13,7 @@ import {
   Message,
   QRCodeEvent,
   SyncEvent,
+  ImageType,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 
 import {
@@ -226,6 +227,21 @@ export class PadlocalService
     }
 
     return client.api.updateContactRemark(username, remark);
+  }
+
+  public async getMessageImage(
+    accountId: number,
+    messageContent: string,
+    messageToUserName: string,
+    imageType: ImageType
+  ) {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    return client.api.getMessageImage(messageContent, messageToUserName, imageType);
   }
 
   public async getLoggedInWechatUsername(accountId: number): Promise<string> {
