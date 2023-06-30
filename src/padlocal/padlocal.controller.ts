@@ -34,7 +34,7 @@ export class PadlocalController {
       requestId: input.id,
     });
 
-    return 'Approved';
+    return 'Processing';
   }
 
   @Post('/:accountId/friend_requests/approve')
