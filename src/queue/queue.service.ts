@@ -23,6 +23,8 @@ export class QueueService {
     private readonly syncContactQueue: Queue,
     @InjectQueue('common')
     private readonly commonQueue: Queue,
+    @InjectQueue('friendRequest')
+    private readonly friendRequestQueue: Queue,
   ) {}
 
   async add(name: string, data: any, options?: JobsOptions) {

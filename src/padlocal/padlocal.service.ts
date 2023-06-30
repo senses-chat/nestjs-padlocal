@@ -233,7 +233,7 @@ export class PadlocalService
     accountId: number,
     messageContent: string,
     messageToUserName: string,
-    imageType: ImageType
+    imageType: ImageType,
   ) {
     const client = this.clients.get(accountId);
 
@@ -241,7 +241,11 @@ export class PadlocalService
       throw new Error(`Account ${accountId} not found`);
     }
 
-    return client.api.getMessageImage(messageContent, messageToUserName, imageType);
+    return client.api.getMessageImage(
+      messageContent,
+      messageToUserName,
+      imageType,
+    );
   }
 
   public async getLoggedInWechatUsername(accountId: number): Promise<string> {

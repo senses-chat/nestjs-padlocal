@@ -1,11 +1,13 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject, Logger } from '@nestjs/common';
+
 import {
   KeyValueStorageBase,
   PADLOCAL_KV_STORAGE,
   PrismaService,
 } from 'src/db';
+import { QueueService } from '../queue.service';
 
 @Processor('newFriendRequest')
 export class NewFriendRequestProcessor extends WorkerHost {
@@ -14,6 +16,7 @@ export class NewFriendRequestProcessor extends WorkerHost {
     @Inject(PADLOCAL_KV_STORAGE)
     private readonly kvStorage: KeyValueStorageBase,
     private readonly prisma: PrismaService,
+    private readonly queueService: QueueService,
   ) {
     super();
   }
@@ -27,7 +30,7 @@ export class NewFriendRequestProcessor extends WorkerHost {
       throw new Error(`Account ${job.data.accountId} is not logged in`);
     }
 
-    await this.prisma.wechatFriendshipRequest.create({
+    const request = await this.prisma.wechatFriendshipRequest.create({
       data: {
         sourceUsername: loggedInUsername,
         username: job.data.friendRequest.fromUsername,
@@ -49,6 +52,11 @@ export class NewFriendRequestProcessor extends WorkerHost {
     this.logger.verbose(
       `new friend request process: ${JSON.stringify(job.data)}`,
     );
+
+    await this.queueService.add('friendRequest', {
+      accountId: job.data.accountId,
+      requestId: request.id,
+    });
   }
 
   @OnWorkerEvent('completed')
