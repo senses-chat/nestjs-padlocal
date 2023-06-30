@@ -24,6 +24,19 @@ export class PadlocalController {
     return this.padlocalService.getFriendshipRequests(Number(accountId));
   }
 
+  @Post('/:accountId/friend_requests/process')
+  async processFriendRequest(
+    @Param('accountId') accountId: string,
+    @Body() input: ApproveFriendRequestInput,
+  ): Promise<string> {
+    await this.queueService.add('friendRequest', {
+      accountId: Number(accountId),
+      requestId: input.id,
+    });
+
+    return 'Approved';
+  }
+
   @Post('/:accountId/friend_requests/approve')
   async approveFriendRequest(
     @Param('accountId') accountId: string,
