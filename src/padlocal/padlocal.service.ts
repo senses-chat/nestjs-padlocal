@@ -14,6 +14,7 @@ import {
   QRCodeEvent,
   SyncEvent,
   ImageType,
+  AddChatRoomMemberType,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 
 import {
@@ -227,6 +228,20 @@ export class PadlocalService
     }
 
     return client.api.updateContactRemark(username, remark);
+  }
+
+  public async addChatRoomMember(
+    accountId: number,
+    roomId: string,
+    username: string,
+  ): Promise<AddChatRoomMemberType> {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    return client.api.addChatRoomMember(roomId, username);
   }
 
   public async getMessageImage(

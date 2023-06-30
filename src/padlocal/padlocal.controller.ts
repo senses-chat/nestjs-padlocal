@@ -42,10 +42,6 @@ export class PadlocalController {
     @Param('accountId') accountId: string,
     @Body() input: ApproveFriendRequestInput,
   ): Promise<string> {
-    // await this.padlocalService.approveFriendshipRequest(
-    //   Number(accountId),
-    //   input.id,
-    // );
     await this.queueService.commonAdd('approveFriendRequests', {
       accountId: Number(accountId),
       input: { id: input.id },
@@ -60,22 +56,10 @@ export class PadlocalController {
     @Param('username') username: string,
     @Body() input: UpdateContactRemarkInput,
   ): Promise<string> {
-    // await this.padlocalService.updateContactRemark(
-    //   Number(accountId),
-    //   username,
-    //   input.remark,
-    // );
     await this.queueService.commonAdd('updateRemark', {
       accountId: Number(accountId),
-      username,
-      input: { remark: input.remark },
+      input: { username, remark: input.remark },
     });
     return 'Remark Updated';
-  }
-
-  @Post('/test')
-  async transcode(): Promise<string> {
-    this.queueService.commonAdd('test', { test: 1 });
-    return 'test';
   }
 }
