@@ -37,6 +37,7 @@ export enum PadlocalMessageContentType {
   CHAT_HISTORY = 'CHAT_HISTORY',
   FRIENDSHIP_REQUEST = 'FRIENDSHIP_REQUEST',
   IMAGE = 'IMAGE',
+  VOICE = "VOICE"
 }
 
 export abstract class PadlocalMessageContent {

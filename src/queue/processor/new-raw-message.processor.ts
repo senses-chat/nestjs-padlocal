@@ -58,6 +58,19 @@ export class NewRawMessageProcessor extends WorkerHost {
       newMessage.content.binarypayload = binarypayloadName;
     }
 
+    if (newMessage.content.type === PadlocalMessageContentType.VOICE && newMessage.content.binarypayload) {
+      const binarypayloadName = `${loggedInUsername}/voice/${job.data.rawMessage.id}.slk`;
+      const voiceData = await this.padlocalService.getMessageVoice(job.data.accountId, job.data.rawMessage.id, job.data.rawMessage.content, job.data.rawMessage.tousername)
+
+      await this.minioSvc.putObject(
+        this.configService.get('minio.bucketName'),
+        `padlocal/${binarypayloadName}`,
+        new Buffer(voiceData)
+      );
+
+      newMessage.content.binarypayload = binarypayloadName;
+    }
+
     await this.queueService.add('newMessage', {
       accountId: job.data.accountId,
       message: newMessage,

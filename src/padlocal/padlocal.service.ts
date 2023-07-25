@@ -244,6 +244,21 @@ export class PadlocalService
     return client.api.getMessageImage(messageContent, messageToUserName, imageType);
   }
 
+  public async getMessageVoice(
+    accountId: number,
+    messageId: string,
+    messageContent: string,
+    messageToUserName: string,
+  ) {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+    
+    return client.api.getMessageVoice(messageId, messageContent, messageToUserName);
+  }
+
   public async getLoggedInWechatUsername(accountId: number): Promise<string> {
     return this.kvStorage.get(`loggedInUser:${accountId}`);
   }

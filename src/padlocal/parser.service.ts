@@ -67,6 +67,12 @@ export class MessageParserService {
           content: payload,
           binarypayload: binarypayload,
         });
+      case PadlocalMessageType.Voice:
+          return plainToInstance(PadlocalImageMessageContent, {
+            type: PadlocalMessageContentType.VOICE,
+            content: payload,
+            binarypayload: binarypayload,
+          });
       default:
         return plainToInstance(PadlocalUnknownMessageContent, {
           type: PadlocalMessageContentType.UNKNOWN,
