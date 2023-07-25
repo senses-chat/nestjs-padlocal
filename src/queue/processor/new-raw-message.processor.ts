@@ -46,7 +46,7 @@ export class NewRawMessageProcessor extends WorkerHost {
     const newMessage = this.parser.parseMessage(job.data.rawMessage);
 
     if (newMessage.content.type === PadlocalMessageContentType.IMAGE && newMessage.content.binarypayload) {
-      const binarypayloadName = `${loggedInUsername}/${job.data.rawMessage.id}.jpg`;
+      const binarypayloadName = `${loggedInUsername}/image/${job.data.rawMessage.id}.jpg`;
       const imageHD = await this.padlocalService.getMessageImage(job.data.accountId, job.data.rawMessage.content, job.data.rawMessage.tousername, ImageType.HD)
 
       await this.minioSvc.putObject(
