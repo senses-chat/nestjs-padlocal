@@ -30,7 +30,7 @@ export class CommonProcessor extends WorkerHost {
         {
           await this.padlocalService.updateContactRemark(
             Number(job.data.accountId),
-            job.data.username,
+            job.data.input.username,
             job.data.input.remark,
           );
         }
@@ -42,6 +42,15 @@ export class CommonProcessor extends WorkerHost {
             job.data.username,
             job.data.input.voiceS3Path,
             job.data.input.voiceLength,
+            );
+        }
+        break;
+      case 'addChatRoomMember':
+        {
+          await this.padlocalService.addChatRoomMember(
+            Number(job.data.accountId),
+            job.data.input.roomId,
+            job.data.input.username,
           );
         }
         break;

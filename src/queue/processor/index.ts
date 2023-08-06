@@ -7,6 +7,7 @@ import { LoginQrcodeProcessor } from './login-qrcode.processor';
 import { LoginStartProcessor } from './login-start.processor';
 import { SyncContactProcessor } from './sync-contact.processor';
 import { CommonProcessor } from './common.processor';
+import { FriendRequestProcessor } from './friend-request.processor';
 
 export const processors = [
   KickoutProcessor,
@@ -18,4 +19,5 @@ export const processors = [
   LoginStartProcessor,
   SyncContactProcessor,
   CommonProcessor,
+  FriendRequestProcessor,
 ];

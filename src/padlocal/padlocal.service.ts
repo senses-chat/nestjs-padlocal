@@ -15,6 +15,7 @@ import {
   QRCodeEvent,
   SyncEvent,
   ImageType,
+  AddChatRoomMemberType,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 import { ConfigService } from '@nestjs/config';
 
@@ -234,11 +235,25 @@ export class PadlocalService
     return client.api.updateContactRemark(username, remark);
   }
 
-  public getMessageImage(
+  public async addChatRoomMember(
+    accountId: number,
+    roomId: string,
+    username: string,
+  ): Promise<AddChatRoomMemberType> {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    return client.api.addChatRoomMember(roomId, username);
+  }
+
+  public async getMessageImage(
     accountId: number,
     messageContent: string,
     messageToUserName: string,
-    imageType: ImageType
+    imageType: ImageType,
   ) {
     const client = this.clients.get(accountId);
 
@@ -246,7 +261,11 @@ export class PadlocalService
       throw new Error(`Account ${accountId} not found`);
     }
 
-    return client.api.getMessageImage(messageContent, messageToUserName, imageType);
+    return client.api.getMessageImage(
+      messageContent,
+      messageToUserName,
+      imageType,
+    );
   }
 
   public getMessageVoice(

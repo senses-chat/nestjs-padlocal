@@ -1,18 +1,21 @@
+import { ConfigService } from '@nestjs/config';
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject, Logger } from '@nestjs/common';
-import { MessageParserService } from '../../padlocal/parser.service';
+import { ImageType } from 'padlocal-client-ts/dist/proto/padlocal_pb';
+
 import {
   KeyValueStorageBase,
   MinioService,
   PADLOCAL_KV_STORAGE,
   PrismaService,
 } from 'src/db';
+import {
+  PadlocalService,
+  MessageParserService,
+  PadlocalMessageContentType,
+} from 'src/padlocal';
 import { QueueService } from '../queue.service';
-import { PadlocalService } from '../../padlocal/padlocal.service';
-import { PadlocalMessageContentType } from 'src/padlocal/models';
-import { ImageType } from "padlocal-client-ts/dist/proto/padlocal_pb";
-import { ConfigService } from '@nestjs/config';
 
 @Processor('newRawMessage')
 export class NewRawMessageProcessor extends WorkerHost {
@@ -52,7 +55,7 @@ export class NewRawMessageProcessor extends WorkerHost {
       await this.minioSvc.putObject(
         this.configService.get('minio.bucketName'),
         `padlocal/${binarypayloadName}`,
-        new Buffer(imageHD.imageData)
+        Buffer.from(imageHD.imageData),
       );
 
       newMessage.content.binarypayload = binarypayloadName;

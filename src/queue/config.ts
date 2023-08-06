@@ -1,4 +1,4 @@
-const queusDefaultOptions = {
+const queuesDefaultOptions = {
   defaultJobOptions: {
     attempts: 10,
     removeOnComplete: true,
@@ -18,39 +18,43 @@ const QUEUES = {
   queuesArray: [
     {
       name: 'kickout',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'loginQrcode',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'loginStart',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'loginSuccess',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'newFriendRequest',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
+    },
+    {
+      name: 'friendRequest',
+      ...queuesDefaultOptions,
     },
     {
       name: 'newMessage',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'newRawMessage',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'syncContact',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
     {
       name: 'common',
-      ...queusDefaultOptions,
+      ...queuesDefaultOptions,
     },
   ],
   commonWorkerOptions: {
