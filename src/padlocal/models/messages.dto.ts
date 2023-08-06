@@ -44,6 +44,7 @@ export abstract class PadlocalMessageContent {
   type: PadlocalMessageContentType;
   messageType: PadlocalMessageType;
   binarypayload?: string;
+  content?: string;
 }
 
 export class PadlocalUnknownMessageContent extends PadlocalMessageContent {

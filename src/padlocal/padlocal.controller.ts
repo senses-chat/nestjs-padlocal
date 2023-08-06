@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { WechatFriendshipRequest } from 'src/db';
-import { ApproveFriendRequestInput, UpdateContactRemarkInput } from './models';
+import { ApproveFriendRequestInput, UpdateContactRemarkInput, SendVoiceMessageInput } from './models';
 import { PadlocalService } from './padlocal.service';
 import { QueueService } from '../queue/queue.service';
 
@@ -60,9 +60,17 @@ export class PadlocalController {
     return 'Remark Updated';
   }
 
-  @Post('/test')
-  async transcode(): Promise<string> {
-    this.queueService.commonAdd('test', { test: 1 });
-    return 'test';
+  @Post('/:accountId/message/:username/voice')
+  async sendVoiceMessage(
+    @Param('accountId') accountId: string,
+    @Param('username') username: string,
+    @Body() input: SendVoiceMessageInput,
+  ): Promise<string> {
+    await this.queueService.commonAdd('sendMessageVoice', {
+      accountId: Number(accountId),
+      username,
+      input,
+    });
+    return 'Sended Voice Message';
   }
 }

@@ -6,6 +6,7 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { KickOutEvent, PadLocalClient } from 'padlocal-client-ts';
+import { v4 as uuid } from "uuid";
 import {
   Contact,
   LoginPolicy,
@@ -15,11 +16,13 @@ import {
   SyncEvent,
   ImageType,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
+import { ConfigService } from '@nestjs/config';
 
 import {
   KeyValueStorageBase,
   PADLOCAL_KV_STORAGE,
   PrismaService,
+  MinioService,
 } from 'src/db';
 import { QueueService } from '../queue/queue.service';
 
@@ -34,6 +37,8 @@ export class PadlocalService
     @Inject(PADLOCAL_KV_STORAGE)
     private readonly kvStorage: KeyValueStorageBase,
     private readonly prisma: PrismaService,
+    private readonly minio: MinioService,
+    private readonly configService: ConfigService,
     private readonly queueService: QueueService,
   ) {}
 
@@ -215,7 +220,7 @@ export class PadlocalService
     });
   }
 
-  public async updateContactRemark(
+  public updateContactRemark(
     accountId: number,
     username: string,
     remark: string,
@@ -229,7 +234,7 @@ export class PadlocalService
     return client.api.updateContactRemark(username, remark);
   }
 
-  public async getMessageImage(
+  public getMessageImage(
     accountId: number,
     messageContent: string,
     messageToUserName: string,
@@ -244,7 +249,7 @@ export class PadlocalService
     return client.api.getMessageImage(messageContent, messageToUserName, imageType);
   }
 
-  public async getMessageVoice(
+  public getMessageVoice(
     accountId: number,
     messageId: string,
     messageContent: string,
@@ -259,7 +264,28 @@ export class PadlocalService
     return client.api.getMessageVoice(messageId, messageContent, messageToUserName);
   }
 
-  public async getLoggedInWechatUsername(accountId: number): Promise<string> {
+  public async sendMessageVoice(
+    accountId: number,
+    messageToUserName: string,
+    voiceS3Path: string,
+    voiceLength: number,
+  ) {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+    
+    const resStream = await this.minio.getObject(this.configService.get('minio.bucketName'), voiceS3Path);
+    const buffers = [];
+    for await (const data of resStream) {
+      buffers.push(data);
+    }
+    const data = Buffer.concat(buffers);
+    return client.api.sendVoiceMessage(uuid().replace(/-/g, ""), messageToUserName, data, voiceLength);
+  }
+
+  public getLoggedInWechatUsername(accountId: number): Promise<string> {
     return this.kvStorage.get(`loggedInUser:${accountId}`);
   }
 

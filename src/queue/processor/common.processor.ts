@@ -35,6 +35,16 @@ export class CommonProcessor extends WorkerHost {
           );
         }
         break;
+      case 'sendMessageVoice':
+        {
+          await this.padlocalService.sendMessageVoice(
+            Number(job.data.accountId),
+            job.data.username,
+            job.data.input.voiceS3Path,
+            job.data.input.voiceLength,
+          );
+        }
+        break;
     }
   }
 

@@ -45,7 +45,7 @@ export class NewRawMessageProcessor extends WorkerHost {
 
     const newMessage = this.parser.parseMessage(job.data.rawMessage);
 
-    if (newMessage.content.type === PadlocalMessageContentType.IMAGE && newMessage.content.binarypayload) {
+    if (newMessage.content.type === PadlocalMessageContentType.IMAGE && job.data.rawMessage.content) {
       const binarypayloadName = `${loggedInUsername}/image/${job.data.rawMessage.id}.jpg`;
       const imageHD = await this.padlocalService.getMessageImage(job.data.accountId, job.data.rawMessage.content, job.data.rawMessage.tousername, ImageType.HD)
 
@@ -58,9 +58,13 @@ export class NewRawMessageProcessor extends WorkerHost {
       newMessage.content.binarypayload = binarypayloadName;
     }
 
-    if (newMessage.content.type === PadlocalMessageContentType.VOICE && newMessage.content.binarypayload) {
+    if (newMessage.content.type === PadlocalMessageContentType.VOICE && job.data.rawMessage.content) {
       const binarypayloadName = `${loggedInUsername}/voice/${job.data.rawMessage.id}.slk`;
-      const voiceData = await this.padlocalService.getMessageVoice(job.data.accountId, job.data.rawMessage.id, job.data.rawMessage.content, job.data.rawMessage.tousername)
+      let content = job.data.rawMessage.content;
+      if (job.data.rawMessage.fromusername.includes('@chatroom')) {
+        content = content.slice(content.indexOf('<msg>'));
+      }
+      const voiceData = await this.padlocalService.getMessageVoice(job.data.accountId, job.data.rawMessage.id, content, job.data.rawMessage.tousername)
 
       await this.minioSvc.putObject(
         this.configService.get('minio.bucketName'),
