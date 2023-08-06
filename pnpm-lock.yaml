@@ -58,6 +58,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.0
     version: 7.8.0
+  uuid:
+    specifier: ^9.0.0
+    version: 9.0.0
 
 devDependencies:
   '@nestjs/cli':
@@ -65,7 +68,7 @@ devDependencies:
     version: 9.4.2
   '@nestjs/schematics':
     specifier: ^9.1.0
-    version: 9.1.0(typescript@5.0.4)
+    version: 9.1.0(chokidar@3.5.3)(typescript@4.9.5)
   '@types/express':
     specifier: ^4.17.17
     version: 4.17.17
@@ -104,7 +107,7 @@ devDependencies:
     version: 0.5.21
   ts-loader:
     specifier: ^9.4.2
-    version: 9.4.2(typescript@5.0.4)
+    version: 9.4.2(typescript@5.0.4)(webpack@5.80.0)
   ts-node:
     specifier: ^10.9.1
     version: 10.9.1(@types/node@18.16.0)(typescript@5.0.4)
@@ -117,22 +120,6 @@ devDependencies:
 
 packages:
 
-  /@angular-devkit/core@15.2.4:
-    resolution: {integrity: sha512-yl+0j1bMwJLKShsyCXw77tbJG8Sd21+itisPLL2MgEpLNAO252kr9zG4TLlFRJyKVftm2l1h78KjqvM5nbOXNg==}
-    engines: {node: ^14.20.0 || ^16.13.0 || >=18.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
-    peerDependencies:
-      chokidar: ^3.5.2
-    peerDependenciesMeta:
-      chokidar:
-        optional: true
-    dependencies:
-      ajv: 8.12.0
-      ajv-formats: 2.1.1
-      jsonc-parser: 3.2.0
-      rxjs: 6.6.7
-      source-map: 0.7.4
-    dev: true
-
   /@angular-devkit/core@15.2.4(chokidar@3.5.3):
     resolution: {integrity: sha512-yl+0j1bMwJLKShsyCXw77tbJG8Sd21+itisPLL2MgEpLNAO252kr9zG4TLlFRJyKVftm2l1h78KjqvM5nbOXNg==}
     engines: {node: ^14.20.0 || ^16.13.0 || >=18.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
@@ -143,7 +130,7 @@ packages:
         optional: true
     dependencies:
       ajv: 8.12.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1(ajv@8.12.0)
       chokidar: 3.5.3
       jsonc-parser: 3.2.0
       rxjs: 6.6.7
@@ -160,7 +147,7 @@ packages:
         optional: true
     dependencies:
       ajv: 8.12.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1(ajv@8.12.0)
       chokidar: 3.5.3
       jsonc-parser: 3.2.0
       rxjs: 6.6.7
@@ -178,19 +165,6 @@ packages:
       inquirer: 8.2.4
       symbol-observable: 4.0.0
       yargs-parser: 21.1.1
-    transitivePeerDependencies:
-      - chokidar
-    dev: true
-
-  /@angular-devkit/schematics@15.2.4:
-    resolution: {integrity: sha512-/W7/vvn59PAVLzhcvD4/N/E8RDhub8ny1A7I96LTRjC5o+yvVV16YJ4YJzolrRrIEN01KmLVQJ9A58VCaweMgw==}
-    engines: {node: ^14.20.0 || ^16.13.0 || >=18.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
-    dependencies:
-      '@angular-devkit/core': 15.2.4
-      jsonc-parser: 3.2.0
-      magic-string: 0.29.0
-      ora: 5.4.1
-      rxjs: 6.6.7
     transitivePeerDependencies:
       - chokidar
     dev: true
@@ -1001,20 +975,6 @@ packages:
       - chokidar
     dev: true
 
-  /@nestjs/schematics@9.1.0(typescript@5.0.4):
-    resolution: {integrity: sha512-/7CyMTnPJSK9/xD9CkCqwuHPOlHVlLC2RDnbdCJ7mIO07SdbBbY14msTqtYW9VRQtsjZPLh1GTChf7ryJUImwA==}
-    peerDependencies:
-      typescript: '>=4.3.5'
-    dependencies:
-      '@angular-devkit/core': 15.2.4
-      '@angular-devkit/schematics': 15.2.4
-      jsonc-parser: 3.2.0
-      pluralize: 8.0.0
-      typescript: 5.0.4
-    transitivePeerDependencies:
-      - chokidar
-    dev: true
-
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1556,8 +1516,10 @@ packages:
     engines: {node: '>=0.8'}
     dev: false
 
-  /ajv-formats@2.1.1:
+  /ajv-formats@2.1.1(ajv@8.12.0):
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -4678,7 +4640,7 @@ packages:
     hasBin: true
     dev: true
 
-  /ts-loader@9.4.2(typescript@5.0.4):
+  /ts-loader@9.4.2(typescript@5.0.4)(webpack@5.80.0):
     resolution: {integrity: sha512-OmlC4WVmFv5I0PpaxYb+qGeGOdm5giHU7HwDDUjw59emP2UYMHy9fFSDcYgSNoH8sXcj4hGCSEhlDZ9ULeDraA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -4690,6 +4652,7 @@ packages:
       micromatch: 4.0.5
       semver: 7.5.0
       typescript: 5.0.4
+      webpack: 5.80.0
     dev: true
 
   /ts-node@10.9.1(@types/node@18.16.0)(typescript@5.0.4):
