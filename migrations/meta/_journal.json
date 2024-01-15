@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1705299116375,
+      "tag": "0000_flawless_toro",
+      "breakpoints": true
+    }
+  ]
+}
