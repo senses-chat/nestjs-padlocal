@@ -68,11 +68,11 @@ export class MessageParserService {
           binarypayload: binarypayload,
         });
       case PadlocalMessageType.Voice:
-          return plainToInstance(PadlocalImageMessageContent, {
-            type: PadlocalMessageContentType.VOICE,
-            content: payload,
-            binarypayload: binarypayload,
-          });
+        return plainToInstance(PadlocalImageMessageContent, {
+          type: PadlocalMessageContentType.VOICE,
+          content: payload,
+          binarypayload: binarypayload,
+        });
       default:
         return plainToInstance(PadlocalUnknownMessageContent, {
           type: PadlocalMessageContentType.UNKNOWN,
@@ -153,11 +153,14 @@ export class MessageParserService {
                 fromUsername: chatusr,
                 text: appXml?.msg?.appmsg?.title,
                 referredMessageId,
-                referredContent: plainToInstance(PadlocalUnknownMessageContent, {
-                  type: PadlocalMessageContentType.UNKNOWN,
-                  messageType: referMessageType,
-                  payload: content,
-                }),
+                referredContent: plainToInstance(
+                  PadlocalUnknownMessageContent,
+                  {
+                    type: PadlocalMessageContentType.UNKNOWN,
+                    messageType: referMessageType,
+                    payload: content,
+                  },
+                ),
               });
             }
           }
@@ -169,11 +172,9 @@ export class MessageParserService {
           });
         }
       }
+    } catch (err) {
+      console.log('====parseAppMessageContent err:', err);
     }
-    catch (err) {
-      console.log("====parseAppMessageContent err:", err)
-    }
-
   }
 
   private parseMessageMetadata(

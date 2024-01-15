@@ -5,21 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@liaoliaots/nestjs-redis':
-    specifier: ^9.0.5
-    version: 9.0.5(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(ioredis@5.3.2)
   '@nestjs/bullmq':
     specifier: ^10.0.1
-    version: 10.0.1(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(bullmq@5.1.1)
+    version: 10.0.1(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(bullmq@4.17.0)
   '@nestjs/common':
     specifier: ^10.3.0
-    version: 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+    version: 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)
   '@nestjs/config':
     specifier: ^3.1.1
-    version: 3.1.1(@nestjs/common@10.3.0)(reflect-metadata@0.2.1)
+    version: 3.1.1(@nestjs/common@10.3.0)(reflect-metadata@0.1.14)
   '@nestjs/core':
     specifier: ^10.3.0
-    version: 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+    version: 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1)
   '@nestjs/platform-express':
     specifier: ^10.3.0
     version: 10.3.0(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)
@@ -27,14 +24,17 @@ dependencies:
     specifier: ^5.7.1
     version: 5.7.1(prisma@5.7.1)
   bullmq:
-    specifier: ^5.1.1
-    version: 5.1.1
+    specifier: ^4.17.0
+    version: 4.17.0
   class-transformer:
     specifier: ^0.5.1
     version: 0.5.1
   date-fns:
     specifier: ^3.0.6
     version: 3.0.6
+  drizzle-orm:
+    specifier: ^0.29.3
+    version: 0.29.3(postgres@3.4.3)
   fast-xml-parser:
     specifier: ^4.3.2
     version: 4.3.2
@@ -50,12 +50,15 @@ dependencies:
   padlocal-client-ts:
     specifier: ^0.5.3
     version: 0.5.3
+  postgres:
+    specifier: ^3.4.3
+    version: 3.4.3
   prisma:
     specifier: ^5.7.1
     version: 5.7.1
   reflect-metadata:
-    specifier: ^0.2.1
-    version: 0.2.1
+    specifier: ^0.1.14
+    version: 0.1.14
   rimraf:
     specifier: ^5.0.5
     version: 5.0.5
@@ -725,20 +728,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@liaoliaots/nestjs-redis@9.0.5(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(ioredis@5.3.2):
-    resolution: {integrity: sha512-nPcGLj0zW4mEsYtQYfWx3o7PmrMjuzFk6+t/g2IRopAeWWUZZ/5nIJ4KTKiz/3DJEUkbX8PZqB+dOhklGF0SVA==}
-    engines: {node: '>=12.22.0'}
-    peerDependencies:
-      '@nestjs/common': ^9.0.0
-      '@nestjs/core': ^9.0.0
-      ioredis: ^5.0.0
-    dependencies:
-      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      ioredis: 5.3.2
-      tslib: 2.4.1
-    dev: false
-
   /@lukeed/csprng@1.1.0:
     resolution: {integrity: sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==}
     engines: {node: '>=8'}
@@ -798,12 +787,12 @@ packages:
       '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
       '@nestjs/core': ^8.0.0 || ^9.0.0 || ^10.0.0
     dependencies:
-      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1)
       tslib: 2.6.0
     dev: false
 
-  /@nestjs/bullmq@10.0.1(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(bullmq@5.1.1):
+  /@nestjs/bullmq@10.0.1(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(bullmq@4.17.0):
     resolution: {integrity: sha512-YJtfJXfnQinN7OvGx/Qd6jlQFu56zVnI1SppftSS7gkthB2CbJQAjkrfCEPDjp11wbPptBhUnatIL2N+nH/3kA==}
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
@@ -811,9 +800,9 @@ packages:
       bullmq: ^3.0.0 || ^4.0.0
     dependencies:
       '@nestjs/bull-shared': 10.0.1(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)
-      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      bullmq: 5.1.1
+      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      bullmq: 4.17.0
       tslib: 2.6.0
     dev: false
 
@@ -859,7 +848,7 @@ packages:
       - webpack-cli
     dev: true
 
-  /@nestjs/common@10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1):
+  /@nestjs/common@10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1):
     resolution: {integrity: sha512-DGv34UHsZBxCM3H5QGE2XE/+oLJzz5+714JQjBhjD9VccFlQs3LRxo/epso4l7nJIiNlZkPyIUC8WzfU/5RTsQ==}
     peerDependencies:
       class-transformer: '*'
@@ -874,27 +863,27 @@ packages:
     dependencies:
       class-transformer: 0.5.1
       iterare: 1.2.1
-      reflect-metadata: 0.2.1
+      reflect-metadata: 0.1.14
       rxjs: 7.8.1
       tslib: 2.6.2
       uid: 2.0.2
     dev: false
 
-  /@nestjs/config@3.1.1(@nestjs/common@10.3.0)(reflect-metadata@0.2.1):
+  /@nestjs/config@3.1.1(@nestjs/common@10.3.0)(reflect-metadata@0.1.14):
     resolution: {integrity: sha512-qu5QlNiJdqQtOsnB6lx4JCXPQ96jkKUsOGd+JXfXwqJqZcOSAq6heNFg0opW4pq4J/VZoNwoo87TNnx9wthnqQ==}
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
       reflect-metadata: ^0.1.13
     dependencies:
-      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)
       dotenv: 16.3.1
       dotenv-expand: 10.0.0
       lodash: 4.17.21
-      reflect-metadata: 0.2.1
+      reflect-metadata: 0.1.14
       uuid: 9.0.0
     dev: false
 
-  /@nestjs/core@10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.2.1)(rxjs@7.8.1):
+  /@nestjs/core@10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1):
     resolution: {integrity: sha512-N06P5ncknW/Pm8bj964WvLIZn2gNhHliCBoAO1LeBvNImYkecqKcrmLbY49Fa1rmMfEM3MuBHeDys3edeuYAOA==}
     requiresBuild: true
     peerDependencies:
@@ -912,13 +901,13 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)
       '@nestjs/platform-express': 10.3.0(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)
       '@nuxtjs/opencollective': 0.3.2
       fast-safe-stringify: 2.1.1
       iterare: 1.2.1
       path-to-regexp: 3.2.0
-      reflect-metadata: 0.2.1
+      reflect-metadata: 0.1.14
       rxjs: 7.8.1
       tslib: 2.6.2
       uid: 2.0.2
@@ -932,8 +921,8 @@ packages:
       '@nestjs/common': ^10.0.0
       '@nestjs/core': ^10.0.0
     dependencies:
-      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+      '@nestjs/common': 10.3.0(class-transformer@0.5.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1)
       body-parser: 1.20.2
       cors: 2.8.5
       express: 4.18.2
@@ -1809,8 +1798,8 @@ packages:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  /bullmq@5.1.1:
-    resolution: {integrity: sha512-j3zbNEQWsyHjpqGWiem2XBfmxAjYcArbwsmGlkM1E9MAVcrqB5hQUsXmyy9gEBAdL+PVotMICr7xTquR4Y2sKQ==}
+  /bullmq@4.17.0:
+    resolution: {integrity: sha512-URnHgB01rlCP8RTpmW3kFnvv3vdd2aI1OcBMYQwnqODxGiJUlz9MibDVXE83mq7ee1eS1IvD9lMQqGszX6E5Pw==}
     dependencies:
       cron-parser: 4.9.0
       glob: 8.1.0
@@ -2182,6 +2171,80 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
+    dev: false
+
+  /drizzle-orm@0.29.3(postgres@3.4.3):
+    resolution: {integrity: sha512-uSE027csliGSGYD0pqtM+SAQATMREb3eSM/U8s6r+Y0RFwTKwftnwwSkqx3oS65UBgqDOM0gMTl5UGNpt6lW0A==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@libsql/client': '*'
+      '@neondatabase/serverless': '>=0.1'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/react': '>=18'
+      '@types/sql.js': '*'
+      '@vercel/postgres': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      expo-sqlite: '>=13.2.0'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      react: '>=18'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/react':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      '@vercel/postgres':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      expo-sqlite:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      react:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
+      postgres: 3.4.3
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -3822,6 +3885,11 @@ packages:
     engines: {node: '>=4.0.0'}
     dev: false
 
+  /postgres@3.4.3:
+    resolution: {integrity: sha512-iHJn4+M9vbTdHSdDzNkC0crHq+1CUdFhx+YqCE+SqWxPjm+Zu63jq7yZborOBF64c8pc58O5uMudyL1FQcHacA==}
+    engines: {node: '>=12'}
+    dev: false
+
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -4002,8 +4070,8 @@ packages:
       redis-errors: 1.2.0
     dev: false
 
-  /reflect-metadata@0.2.1:
-    resolution: {integrity: sha512-i5lLI6iw9AU3Uu4szRNPPEkomnkjRTaVt9hy/bn5g/oSzekBSMeLZblcjP74AW0vBabqERLLIrz+gR8QYR54Tw==}
+  /reflect-metadata@0.1.14:
+    resolution: {integrity: sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==}
     dev: false
 
   /regenerator-runtime@0.13.11:
@@ -4546,10 +4614,6 @@ packages:
       minimist: 1.2.8
       strip-bom: 3.0.0
     dev: true
-
-  /tslib@2.4.1:
-    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
-    dev: false
 
   /tslib@2.6.0:
     resolution: {integrity: sha512-7At1WUettjcSRHXCyYtTselblcHl9PJFFVKiCAy/bY97+BPZXSQ2wbq0P9s8tK2G7dFQfNnlJnPAiArVBVBsfA==}
