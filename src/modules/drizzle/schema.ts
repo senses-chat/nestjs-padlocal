@@ -11,18 +11,18 @@ import {
 } from 'drizzle-orm/pg-core';
 
 export const padlocalAccount = pgTable(
-  'PadlocalAccount',
+  'padlocal_account',
   {
     id: serial('id').primaryKey().notNull(),
     token: text('token').notNull(),
-    createdAt: timestamp('createdAt', {
+    createdAt: timestamp('created_at', {
       precision: 6,
       withTimezone: true,
       mode: 'string',
     })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp('updatedAt', {
+    updatedAt: timestamp('updated_at', {
       precision: 6,
       withTimezone: true,
       mode: 'string',
@@ -32,16 +32,16 @@ export const padlocalAccount = pgTable(
   },
   (table) => {
     return {
-      tokenIdx: index('PadlocalAccount_token_idx').on(table.token),
+      tokenIdx: index('padlocal_account_token_idx').on(table.token),
     };
   },
 );
 
 export const wechatContact = pgTable(
-  'WechatContact',
+  'wechat_contact',
   {
     id: serial('id').primaryKey().notNull(),
-    sourceUsername: text('sourceUsername').notNull(),
+    sourceUsername: text('source_username').notNull(),
     username: text('username').notNull(),
     nickname: text('nickname').notNull(),
     gender: integer('gender').notNull(),
@@ -52,36 +52,36 @@ export const wechatContact = pgTable(
     city: text('city'),
     province: text('province'),
     country: text('country'),
-    contactaddscene: integer('contactaddscene').notNull(),
+    contactAddScene: integer('contact_add_scene').notNull(),
     stranger: boolean('stranger').notNull(),
-    encryptusername: text('encryptusername'),
-    phoneList: jsonb('phoneList'),
-    chatroomownerusername: text('chatroomownerusername'),
-    chatroommaxcount: integer('chatroommaxcount').notNull(),
-    chatroommemberList: jsonb('chatroommemberList'),
+    encryptUsername: text('encrypt_username'),
+    phoneList: jsonb('phone_list'),
+    chatroomOwnerUsername: text('chatroom_owner_username'),
+    chatroomMaxCount: integer('chatroom_max_count').notNull(),
+    chatroomMemberList: jsonb('chatroom_member_list'),
     label: text('label'),
   },
   (table) => {
     return {
       sourceUsernameUsernameIdx: index(
-        'WechatContact_sourceUsername_username_idx',
+        'wechat_contact_source_username_username_idx',
       ).on(table.sourceUsername, table.username),
-      usernameIdx: index('WechatContact_username_idx').on(table.username),
+      usernameIdx: index('wechat_contact_username_idx').on(table.username),
       sourceUsernameUsernameKey: uniqueIndex(
-        'WechatContact_sourceUsername_username_key',
+        'wechat_contact_source_username_username_key',
       ).on(table.sourceUsername, table.username),
     };
   },
 );
 
-export const wechatFriendshipRequest = pgTable('WechatFriendshipRequest', {
+export const wechatFriendshipRequest = pgTable('wechat_friendship_request', {
   id: serial('id').primaryKey().notNull(),
-  sourceUsername: text('sourceUsername').notNull(),
+  sourceUsername: text('source_username').notNull(),
   username: text('username').notNull(),
-  encryptUsername: text('encryptUsername').notNull(),
+  encryptUsername: text('encrypt_username').notNull(),
   nickname: text('nickname').notNull(),
   ticket: text('ticket').notNull(),
-  requestMessage: text('requestMessage').notNull(),
+  requestMessage: text('request_message').notNull(),
   scene: integer('scene').notNull(),
   avatar: text('avatar'),
   gender: integer('gender'),
@@ -90,7 +90,7 @@ export const wechatFriendshipRequest = pgTable('WechatFriendshipRequest', {
   province: text('province'),
   country: text('country'),
   payload: jsonb('payload').notNull(),
-  createdAt: timestamp('createdAt', {
+  createdAt: timestamp('created_at', {
     precision: 6,
     withTimezone: true,
     mode: 'string',
@@ -99,15 +99,15 @@ export const wechatFriendshipRequest = pgTable('WechatFriendshipRequest', {
     .notNull(),
 });
 
-export const rawMessage = pgTable('RawMessage', {
+export const rawMessage = pgTable('raw_message', {
   id: text('id').primaryKey().notNull(),
   content: text('content').notNull(),
-  atList: text('atList').array(),
-  binarypayload: text('binarypayload').notNull(),
-  createtime: integer('createtime').notNull(),
-  fromusername: text('fromusername').notNull(),
-  pushcontent: text('pushcontent').notNull(),
-  tousername: text('tousername').notNull(),
+  atList: text('at_list').array(),
+  binaryPayload: text('binary_payload').notNull(),
+  createTime: integer('create_time').notNull(),
+  fromUsername: text('from_username').notNull(),
+  pushContent: text('push_content').notNull(),
+  toUsername: text('to_username').notNull(),
   type: integer('type').notNull(),
-  loggedInUsername: text('loggedInUsername').notNull(),
+  loggedInUsername: text('logged_in_username').notNull(),
 });

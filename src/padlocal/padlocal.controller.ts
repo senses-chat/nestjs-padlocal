@@ -1,8 +1,11 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { WechatFriendshipRequest } from 'src/db';
-import { ApproveFriendRequestInput, UpdateContactRemarkInput, SendVoiceMessageInput } from './models';
+import {
+  ApproveFriendRequestInput,
+  UpdateContactRemarkInput,
+  SendVoiceMessageInput,
+} from './models';
 import { PadlocalService } from './padlocal.service';
-import { QueueService } from '../queue/queue.service';
 
 @Controller('padlocal')
 export class PadlocalController {

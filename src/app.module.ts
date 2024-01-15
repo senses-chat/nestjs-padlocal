@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { PadlocalModule } from 'src/padlocal';
 
-import serverConfig from './config';
+import appConfig from './app.config';
 import { AppController } from './app.controller';
 
 const ENV = process.env.NODE_ENV;
@@ -13,7 +13,7 @@ const ENV = process.env.NODE_ENV;
     ConfigModule.forRoot({
       // mimic behaviors from nextjs
       envFilePath: [`.env.${ENV}.local`, `.env.${ENV}`, `.env.local`, '.env'],
-      load: [serverConfig],
+      load: [appConfig],
     }),
     PadlocalModule,
   ],
