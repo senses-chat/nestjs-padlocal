@@ -6,7 +6,7 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { KickOutEvent, PadLocalClient } from 'padlocal-client-ts';
-import { v4 as uuid } from "uuid";
+import { v4 as uuid } from 'uuid';
 import {
   Contact,
   LoginPolicy,
@@ -44,86 +44,82 @@ export class PadlocalService
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    try {
-      const accounts = await this.prisma.padlocalAccount.findMany();
+    const accounts = await this.prisma.padlocalAccount.findMany();
 
-      for (const account of accounts) {
-        this.logger.debug(
-          `Initializing padlocal account ${account.id} (${account.token})`,
-        );
+    for (const account of accounts) {
+      this.logger.debug(
+        `Initializing padlocal account ${account.id} (${account.token})`,
+      );
 
-        const client = await PadLocalClient.create(account.token, true);
-        this.clients.set(account.id, client);
+      const client = await PadLocalClient.create(account.token, true);
+      this.clients.set(account.id, client);
 
-        client.on('kickout', (kickoutEvent: KickOutEvent) => {
-          this.queueService.add('kickout', {
+      client.on('kickout', (kickoutEvent: KickOutEvent) => {
+        this.queueService.add('kickout', {
+          accountId: account.id,
+          kickoutEvent,
+        });
+      });
+
+      client.on('message', (messageList: Message[]) => {
+        for (const message of messageList) {
+          this.queueService.add('newRawMessage', {
             accountId: account.id,
-            kickoutEvent,
+            rawMessage: message.toObject(),
           });
-        });
+        }
+      });
 
-        client.on('message', (messageList: Message[]) => {
-          for (const message of messageList) {
-            this.queueService.add('newRawMessage', {
-              accountId: account.id,
-              rawMessage: message.toObject(),
-            });
-          }
-        });
+      client.on('contact', (contactList: Contact[]) => {
+        for (const contact of contactList) {
+          this.queueService.add('syncContact', {
+            accountId: account.id,
+            contact: contact.toObject(),
+          });
+        }
+      });
 
-        client.on('contact', (contactList: Contact[]) => {
-          for (const contact of contactList) {
+      await client.api.login(LoginPolicy.DEFAULT, {
+        onLoginStart: (loginType: LoginType) => {
+          this.queueService.add('loginStart', {
+            accountId: account.id,
+            loginType,
+          });
+        },
+        onOneClickEvent: (oneClickEvent: QRCodeEvent) => {
+          this.queueService.add('loginQrcode', {
+            accountId: account.id,
+            qrCodeEvent: oneClickEvent.toObject(),
+          });
+        },
+        onQrCodeEvent: (qrCodeEvent: QRCodeEvent) => {
+          this.queueService.add('loginQrcode', {
+            accountId: account.id,
+            qrCodeEvent: qrCodeEvent.toObject(),
+          });
+        },
+        onLoginSuccess: (contact: Contact) => {
+          this.queueService.add('loginSuccess', {
+            accountId: account.id,
+            contactSelf: contact.toObject(),
+          });
+        },
+        onSync: (syncEvent: SyncEvent) => {
+          for (const contact of syncEvent.getContactList()) {
             this.queueService.add('syncContact', {
               accountId: account.id,
               contact: contact.toObject(),
             });
           }
-        });
 
-        await client.api.login(LoginPolicy.DEFAULT, {
-          onLoginStart: (loginType: LoginType) => {
-            this.queueService.add('loginStart', {
+          for (const message of syncEvent.getMessageList()) {
+            this.queueService.add('newRawMessage', {
               accountId: account.id,
-              loginType,
+              rawMessage: message.toObject(),
             });
-          },
-          onOneClickEvent: (oneClickEvent: QRCodeEvent) => {
-            this.queueService.add('loginQrcode', {
-              accountId: account.id,
-              qrCodeEvent: oneClickEvent.toObject(),
-            });
-          },
-          onQrCodeEvent: (qrCodeEvent: QRCodeEvent) => {
-            this.queueService.add('loginQrcode', {
-              accountId: account.id,
-              qrCodeEvent: qrCodeEvent.toObject(),
-            });
-          },
-          onLoginSuccess: (contact: Contact) => {
-            this.queueService.add('loginSuccess', {
-              accountId: account.id,
-              contactSelf: contact.toObject(),
-            });
-          },
-          onSync: (syncEvent: SyncEvent) => {
-            for (const contact of syncEvent.getContactList()) {
-              this.queueService.add('syncContact', {
-                accountId: account.id,
-                contact: contact.toObject(),
-              });
-            }
-
-            for (const message of syncEvent.getMessageList()) {
-              this.queueService.add('newRawMessage', {
-                accountId: account.id,
-                rawMessage: message.toObject(),
-              });
-            }
-          },
-        });
-      }
-    } catch (err) {
-      console.log('==============err', err);
+          }
+        },
+      });
     }
   }
 
@@ -279,8 +275,12 @@ export class PadlocalService
     if (!client) {
       throw new Error(`Account ${accountId} not found`);
     }
-    
-    return client.api.getMessageVoice(messageId, messageContent, messageToUserName);
+
+    return client.api.getMessageVoice(
+      messageId,
+      messageContent,
+      messageToUserName,
+    );
   }
 
   public async sendMessageVoice(
@@ -294,14 +294,22 @@ export class PadlocalService
     if (!client) {
       throw new Error(`Account ${accountId} not found`);
     }
-    
-    const resStream = await this.minio.getObject(this.configService.get('minio.bucketName'), voiceS3Path);
+
+    const resStream = await this.minio.getObject(
+      this.configService.get('minio.bucketName'),
+      voiceS3Path,
+    );
     const buffers = [];
     for await (const data of resStream) {
       buffers.push(data);
     }
     const data = Buffer.concat(buffers);
-    return client.api.sendVoiceMessage(uuid().replace(/-/g, ""), messageToUserName, data, voiceLength);
+    return client.api.sendVoiceMessage(
+      uuid().replace(/-/g, ''),
+      messageToUserName,
+      data,
+      voiceLength,
+    );
   }
 
   public getLoggedInWechatUsername(accountId: number): Promise<string> {
@@ -309,8 +317,10 @@ export class PadlocalService
   }
 
   async onApplicationShutdown(signal?: string) {
+    this.logger.debug(
+      `Shutting down all running padlocal clients after receiving ${signal}`,
+    );
     const clients = this.clients.values();
-    this.logger.debug(`Shutting down all running padlocal clients`);
     for (const client of clients) {
       await client.shutdown();
     }
