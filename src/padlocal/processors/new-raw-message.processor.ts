@@ -40,13 +40,28 @@ export class NewRawMessageProcessor extends WorkerHost {
     await this.drizzleService.db
       .insert(rawMessage)
       .values({
-        ...job.data.rawMessage,
+        id: job.data.rawMessage.id,
+        content: job.data.rawMessage.content,
+        atList: job.data.rawMessage.atList,
+        binaryPayload: job.data.rawMessage.binarypayload,
+        createTime: job.data.rawMessage.createtime,
+        fromUsername: job.data.rawMessage.fromusername,
+        pushContent: job.data.rawMessage.pushcontent,
+        toUsername: job.data.rawMessage.tousername,
+        type: job.data.rawMessage.type,
         loggedInUsername,
       })
       .onConflictDoUpdate({
         target: rawMessage.id,
         set: {
-          ...job.data.rawMessage,
+          content: job.data.rawMessage.content,
+          atList: job.data.rawMessage.atList,
+          binaryPayload: job.data.rawMessage.binarypayload,
+          createTime: job.data.rawMessage.createtime,
+          fromUsername: job.data.rawMessage.fromusername,
+          pushContent: job.data.rawMessage.pushcontent,
+          toUsername: job.data.rawMessage.tousername,
+          type: job.data.rawMessage.type,
           loggedInUsername,
         },
       });

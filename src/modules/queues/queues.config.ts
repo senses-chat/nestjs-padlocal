@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 export default registerAs('queues', () => ({
   bullmq: {
-    prefix: process.env.MQ_PREFIX || 'ssmq',
+    prefix: process.env.MQ_PREFIX || 'padlocalmq',
     connection: {
       host: process.env.REDIS_HOST || 'localhost',
       port: Number(process.env.REDIS_PORT) || 6379,

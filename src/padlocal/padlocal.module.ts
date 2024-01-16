@@ -24,6 +24,7 @@ import {
   NEW_RAW_MESSAGE_OPTIONS,
   SYNC_CONTACT_OPTIONS,
 } from './queues';
+import { ConfigModule } from '@nestjs/config';
 
 const queues = [
   ACTIONS_OPTIONS,
@@ -40,6 +41,7 @@ const queues = [
 
 @Module({
   imports: [
+    ConfigModule,
     RedisModule,
     MinioModule,
     OpenSearchModule,

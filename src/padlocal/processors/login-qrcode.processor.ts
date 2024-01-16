@@ -24,7 +24,7 @@ export class LoginQrcodeProcessor extends WorkerHost {
     );
 
     if (job.data.qrCodeEvent.status === QRCodeStatus.NEW) {
-      await this.redisService.client.set(
+      await this.redisService.client.setex(
         `loginQRCode:${job.data.accountId}`,
         job.data.qrCodeEvent.imageurl,
         job.data.qrCodeEvent.expireat,
