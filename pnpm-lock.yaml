@@ -83,9 +83,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
-  silk-sdk:
-    specifier: ^0.2.2
-    version: 0.2.2
+  silk-wasm:
+    specifier: ^3.1.1
+    version: 3.1.1
   uuid:
     specifier: ^9.0.0
     version: 9.0.1
@@ -2185,12 +2185,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /bindings@1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
-    dependencies:
-      file-uri-to-path: 1.0.0
-    dev: false
-
   /bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
     dependencies:
@@ -2337,11 +2331,6 @@ packages:
   /bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
-    dev: false
-
-  /cac@6.7.14:
-    resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
-    engines: {node: '>=8'}
     dev: false
 
   /call-bind@1.0.5:
@@ -3354,10 +3343,6 @@ packages:
       readable-web-to-node-stream: 3.0.2
       strtok3: 6.3.0
       token-types: 4.2.1
-    dev: false
-
-  /file-uri-to-path@1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
     dev: false
 
   /filelist@1.0.4:
@@ -5304,13 +5289,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  /silk-sdk@0.2.2:
-    resolution: {integrity: sha512-DnhFzCFUpb2FnkulKaerv6qryQJ70CVs+19OsskVOHYkB0MwiyoWwcoB8TwuL2wJd+kskqBRBHml0UKo8UPcPA==}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      bindings: 1.5.0
-      cac: 6.7.14
+  /silk-wasm@3.1.1:
+    resolution: {integrity: sha512-m0m3iTSxvYfYYwlpwZBJEr5KMCTH5/gHguEYam3n7se6nnakbRB/H8fnSR5KGnmK/9ZgJBPUgH931YCuqSiOOQ==}
     dev: false
 
   /sisteransi@1.0.5:
