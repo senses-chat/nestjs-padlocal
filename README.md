@@ -5,8 +5,8 @@
 ## 制作这个库的初衷
 
 - 生产级别的云原生部署
-  - 通过Prisma灵活对接各种数据库（SQLite、MySQL、PostgreSQL、MongoDB）
-  - 基于Redis的缓存和消息队列
+  - 通过Drizzle ORM灵活对接各种数据库（SQLite、MySQL、PostgreSQL、MongoDB）
+  - 基于BullMQ的缓存和消息队列
   - 兼容S3（AWS、腾讯云）的对象存储（可以通过minio本地部署或者对接阿里云）
 - 更简单的使用和扩展
   - 直接使用BullMQ对接消息队列
