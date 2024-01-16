@@ -1,12 +1,14 @@
 import {
-  Inject,
   Injectable,
   Logger,
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import { KickOutEvent, PadLocalClient } from 'padlocal-client-ts';
+import { ConfigService } from '@nestjs/config';
+import { InjectQueue } from '@nestjs/bullmq';
 import { v4 as uuid } from 'uuid';
+import { Queue } from 'bullmq';
+import { KickOutEvent, PadLocalClient } from 'padlocal-client-ts';
 import {
   Contact,
   LoginPolicy,
@@ -17,15 +19,24 @@ import {
   ImageType,
   AddChatRoomMemberType,
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
-import { ConfigService } from '@nestjs/config';
+import { and, eq } from 'drizzle-orm';
+
+import { RedisService } from '@/modules/redis';
+import { MinioService } from '@/modules/minio';
+import { DrizzleService } from '@/modules/drizzle';
+import {
+  padlocalAccount,
+  wechatFriendshipRequest,
+} from '@/modules/drizzle/schema';
 
 import {
-  KeyValueStorageBase,
-  PADLOCAL_KV_STORAGE,
-  PrismaService,
-  MinioService,
-} from 'src/db';
-import { QueueService } from '../queue/queue.service';
+  KICK_OUT,
+  LOGIN_QR_CODE,
+  LOGIN_START,
+  LOGIN_SUCCESS,
+  NEW_RAW_MESSAGE,
+  SYNC_CONTACT,
+} from './queues';
 
 @Injectable()
 export class PadlocalService
@@ -34,17 +45,29 @@ export class PadlocalService
   private readonly logger = new Logger(PadlocalService.name);
   private clients = new Map<number, PadLocalClient>();
 
+  private db = this.drizzleService.db;
+
   constructor(
-    @Inject(PADLOCAL_KV_STORAGE)
-    private readonly kvStorage: KeyValueStorageBase,
-    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
     private readonly minio: MinioService,
+    private readonly drizzleService: DrizzleService,
     private readonly configService: ConfigService,
-    private readonly queueService: QueueService,
+    @InjectQueue(KICK_OUT)
+    private readonly kickOutQueue: Queue,
+    @InjectQueue(NEW_RAW_MESSAGE)
+    private readonly newRawMessageQueue: Queue,
+    @InjectQueue(SYNC_CONTACT)
+    private readonly syncContactQueue: Queue,
+    @InjectQueue(LOGIN_START)
+    private readonly loginStartQueue: Queue,
+    @InjectQueue(LOGIN_QR_CODE)
+    private readonly loginQrCodeQueue: Queue,
+    @InjectQueue(LOGIN_SUCCESS)
+    private readonly loginSuccessQueue: Queue,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    const accounts = await this.prisma.padlocalAccount.findMany();
+    const accounts = await this.db.select().from(padlocalAccount);
 
     for (const account of accounts) {
       this.logger.debug(
@@ -55,7 +78,7 @@ export class PadlocalService
       this.clients.set(account.id, client);
 
       client.on('kickout', (kickoutEvent: KickOutEvent) => {
-        this.queueService.add('kickout', {
+        this.kickOutQueue.add('kickout', {
           accountId: account.id,
           kickoutEvent,
         });
@@ -63,7 +86,7 @@ export class PadlocalService
 
       client.on('message', (messageList: Message[]) => {
         for (const message of messageList) {
-          this.queueService.add('newRawMessage', {
+          this.newRawMessageQueue.add('newRawMessage', {
             accountId: account.id,
             rawMessage: message.toObject(),
           });
@@ -72,7 +95,7 @@ export class PadlocalService
 
       client.on('contact', (contactList: Contact[]) => {
         for (const contact of contactList) {
-          this.queueService.add('syncContact', {
+          this.syncContactQueue.add('syncContact', {
             accountId: account.id,
             contact: contact.toObject(),
           });
@@ -81,39 +104,39 @@ export class PadlocalService
 
       await client.api.login(LoginPolicy.DEFAULT, {
         onLoginStart: (loginType: LoginType) => {
-          this.queueService.add('loginStart', {
+          this.loginStartQueue.add('loginStart', {
             accountId: account.id,
             loginType,
           });
         },
         onOneClickEvent: (oneClickEvent: QRCodeEvent) => {
-          this.queueService.add('loginQrcode', {
+          this.loginQrCodeQueue.add('loginQrcode', {
             accountId: account.id,
             qrCodeEvent: oneClickEvent.toObject(),
           });
         },
         onQrCodeEvent: (qrCodeEvent: QRCodeEvent) => {
-          this.queueService.add('loginQrcode', {
+          this.loginQrCodeQueue.add('loginQrcode', {
             accountId: account.id,
             qrCodeEvent: qrCodeEvent.toObject(),
           });
         },
         onLoginSuccess: (contact: Contact) => {
-          this.queueService.add('loginSuccess', {
+          this.loginSuccessQueue.add('loginSuccess', {
             accountId: account.id,
             contactSelf: contact.toObject(),
           });
         },
         onSync: (syncEvent: SyncEvent) => {
           for (const contact of syncEvent.getContactList()) {
-            this.queueService.add('syncContact', {
+            this.syncContactQueue.add('syncContact', {
               accountId: account.id,
               contact: contact.toObject(),
             });
           }
 
           for (const message of syncEvent.getMessageList()) {
-            this.queueService.add('newRawMessage', {
+            this.newRawMessageQueue.add('newRawMessage', {
               accountId: account.id,
               rawMessage: message.toObject(),
             });
@@ -133,7 +156,7 @@ export class PadlocalService
     await client.api.syncContact({
       onSync: (contactList: Contact[]) => {
         for (const contact of contactList) {
-          this.queueService.add('syncContact', {
+          this.syncContactQueue.add('syncContact', {
             accountId,
             contact: contact.toObject(),
           });
@@ -150,8 +173,8 @@ export class PadlocalService
       throw new Error(`Logged in user for account ${accountId} not found`);
     }
 
-    return this.prisma.wechatFriendshipRequest.findMany({
-      select: {
+    return this.db.query.wechatFriendshipRequest.findMany({
+      columns: {
         id: true,
         username: true,
         nickname: true,
@@ -165,9 +188,7 @@ export class PadlocalService
         country: true,
         createdAt: true,
       },
-      where: {
-        sourceUsername: username,
-      },
+      where: eq(wechatFriendshipRequest.sourceUsername, username),
     });
   }
 
@@ -182,13 +203,9 @@ export class PadlocalService
     }
 
     const friendshipRequest =
-      await this.prisma.wechatFriendshipRequest.findFirst({
-        where: {
-          id: friendshipRequestId,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
+      await this.db.query.wechatFriendshipRequest.findFirst({
+        where: eq(wechatFriendshipRequest.id, friendshipRequestId),
+        orderBy: (requests, { desc }) => [desc(requests.createdAt)],
       });
 
     if (!friendshipRequest || friendshipRequest.sourceUsername !== username) {
@@ -209,12 +226,17 @@ export class PadlocalService
     );
 
     // remove all friendship requests with the same person
-    await this.prisma.wechatFriendshipRequest.deleteMany({
-      where: {
-        sourceUsername: friendshipRequest.sourceUsername,
-        username: friendshipRequest.username,
-      },
-    });
+    await this.db
+      .delete(wechatFriendshipRequest)
+      .where(
+        and(
+          eq(
+            wechatFriendshipRequest.sourceUsername,
+            friendshipRequest.sourceUsername,
+          ),
+          eq(wechatFriendshipRequest.username, friendshipRequest.username),
+        ),
+      );
   }
 
   public updateContactRemark(
@@ -313,7 +335,7 @@ export class PadlocalService
   }
 
   public getLoggedInWechatUsername(accountId: number): Promise<string> {
-    return this.kvStorage.get(`loggedInUser:${accountId}`);
+    return this.redisService.client.get(`loggedInUser:${accountId}`);
   }
 
   async onApplicationShutdown(signal?: string) {

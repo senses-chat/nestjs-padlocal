@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   postgres:
-    image: postgres:12
+    image: postgres:15.3
     restart: always
     ports:
       - 5432:5432
@@ -15,21 +15,21 @@ services:
       ## uncomment this line to initialize with existing data
       # - ./main_db.sql:/docker-entrypoint-initdb.d/main_db.sql
 
-  redis:
-    image: redis:6
-    # command: redis-server --appendonly yes --requirepass padlocalrocks
-    command: redis-server --appendonly yes
-    restart: always
-    ports:
-      - 6379:6379
-    # environment:
-    #   - REDIS_PASSWORD=padlocalrocks
-    volumes:
-      - redis:/data
+  # redis:
+  #   image: redis:6
+  #   # command: redis-server --appendonly yes --requirepass padlocalrocks
+  #   command: redis-server --appendonly yes
+  #   restart: always
+  #   ports:
+  #     - 6379:6379
+  #   # environment:
+  #   #   - REDIS_PASSWORD=padlocalrocks
+  #   volumes:
+  #     - redis:/data
 
 
 volumes:
   postgres:
     driver: local
-  redis:
-    driver: local
+  # redis:
+  #   driver: local

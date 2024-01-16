@@ -9,6 +9,8 @@ import {
   boolean,
   jsonb,
 } from 'drizzle-orm/pg-core';
+import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
+import { z } from 'zod';
 
 export const padlocalAccount = pgTable(
   'padlocal_account',
@@ -36,6 +38,13 @@ export const padlocalAccount = pgTable(
     };
   },
 );
+
+export const padlocalAccountSelectSchema = createSelectSchema(padlocalAccount, {
+  id: z.number(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+export const padlocalAccountInsertSchema = createInsertSchema(padlocalAccount);
 
 export const wechatContact = pgTable(
   'wechat_contact',
