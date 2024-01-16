@@ -37,7 +37,7 @@ export enum PadlocalMessageContentType {
   CHAT_HISTORY = 'CHAT_HISTORY',
   FRIENDSHIP_REQUEST = 'FRIENDSHIP_REQUEST',
   IMAGE = 'IMAGE',
-  VOICE = "VOICE"
+  VOICE = 'VOICE',
 }
 
 export abstract class PadlocalMessageContent {
@@ -56,6 +56,11 @@ export class PadlocalTextMessageContent extends PadlocalMessageContent {
 }
 
 export class PadlocalImageMessageContent extends PadlocalMessageContent {
+  content: string;
+  binarypayload: string;
+}
+
+export class PadlocalVoiceMessageContent extends PadlocalMessageContent {
   content: string;
   binarypayload: string;
 }

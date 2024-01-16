@@ -1,16 +1,18 @@
 import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ImageType } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq';
 import { Job, Queue } from 'bullmq';
 
 import { RedisService } from '~/modules/redis';
 import { DrizzleService } from '~/modules/drizzle';
-import { MinioService } from '~/modules/minio';
 import { rawMessage } from '~/modules/drizzle/schema';
 
 import { PadlocalMessageContentType } from '../models';
-import { NEW_MESSAGE, NEW_RAW_MESSAGE } from '../queues';
+import {
+  IMAGE_MESSAGE,
+  NEW_MESSAGE,
+  NEW_RAW_MESSAGE,
+  VOICE_MESSAGE,
+} from '../queues';
 import { PadlocalService } from '../padlocal.service';
 import { MessageParserService } from '../parser.service';
 
@@ -22,8 +24,10 @@ export class NewRawMessageProcessor extends WorkerHost {
     private readonly parser: MessageParserService,
     private readonly redisService: RedisService,
     private readonly drizzleService: DrizzleService,
-    private readonly minioService: MinioService,
-    private readonly configService: ConfigService,
+    @InjectQueue(IMAGE_MESSAGE)
+    private readonly imageMessageQueue: Queue,
+    @InjectQueue(VOICE_MESSAGE)
+    private readonly voiceMessageQueue: Queue,
     @InjectQueue(NEW_MESSAGE)
     private readonly newMessageQueue: Queue,
   ) {
@@ -72,49 +76,25 @@ export class NewRawMessageProcessor extends WorkerHost {
       newMessage.content.type === PadlocalMessageContentType.IMAGE &&
       job.data.rawMessage.content
     ) {
-      const binarypayloadName = `${loggedInUsername}/image/${job.data.rawMessage.id}.jpg`;
-      const imageHD = await this.padlocalService.getMessageImage(
-        job.data.accountId,
-        job.data.rawMessage.content,
-        job.data.rawMessage.tousername,
-        ImageType.HD,
-      );
-
-      await this.minioService.putObject(
-        this.configService.get('minio.bucketName'),
-        `padlocal/${binarypayloadName}`,
-        Buffer.from(imageHD.imageData),
-      );
-
-      newMessage.content.binarypayload = binarypayloadName;
+      return this.imageMessageQueue.add('imageMessage', {
+        accountId: job.data.accountId,
+        rawMessage: job.data.rawMessage,
+        newMessage,
+      });
     }
 
     if (
       newMessage.content.type === PadlocalMessageContentType.VOICE &&
       job.data.rawMessage.content
     ) {
-      const binarypayloadName = `${loggedInUsername}/voice/${job.data.rawMessage.id}.slk`;
-      let content = job.data.rawMessage.content;
-      if (job.data.rawMessage.fromusername.includes('@chatroom')) {
-        content = content.slice(content.indexOf('<msg>'));
-      }
-      const voiceData = await this.padlocalService.getMessageVoice(
-        job.data.accountId,
-        job.data.rawMessage.id,
-        content,
-        job.data.rawMessage.tousername,
-      );
-
-      await this.minioService.putObject(
-        this.configService.get('minio.bucketName'),
-        `padlocal/${binarypayloadName}`,
-        new Buffer(voiceData),
-      );
-
-      newMessage.content.binarypayload = binarypayloadName;
+      return this.voiceMessageQueue.add('voiceMessage', {
+        accountId: job.data.accountId,
+        rawMessage: job.data.rawMessage,
+        newMessage,
+      });
     }
 
-    await this.newMessageQueue.add('newMessage', {
+    return this.newMessageQueue.add('newMessage', {
       accountId: job.data.accountId,
       message: newMessage,
     });

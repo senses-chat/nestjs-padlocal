@@ -8,12 +8,16 @@ import { LoginStartProcessor } from './login-start.processor';
 import { SyncContactProcessor } from './sync-contact.processor';
 import { ActionsProcessor } from './actions.processor';
 import { FriendRequestProcessor } from './friend-request.processor';
+import { ImageMessageProcessor } from './image-message.processor';
+import { VoiceMessageProcessor } from './voice-message.processor';
 
 export const processors = [
   KickoutProcessor,
   LoginSuccessProcessor,
   NewRawMessageProcessor,
   NewMessageProcessor,
+  ImageMessageProcessor,
+  VoiceMessageProcessor,
   NewFriendRequestProcessor,
   LoginQrcodeProcessor,
   LoginStartProcessor,

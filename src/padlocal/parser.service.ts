@@ -17,6 +17,7 @@ import {
   PadlocalReferMessageContent,
   PadlocalTextMessageContent,
   PadlocalUnknownMessageContent,
+  PadlocalVoiceMessageContent,
 } from './models';
 import { isIMRoomId, isRoomId } from './utils';
 
@@ -64,14 +65,14 @@ export class MessageParserService {
       case PadlocalMessageType.Image:
         return plainToInstance(PadlocalImageMessageContent, {
           type: PadlocalMessageContentType.IMAGE,
-          content: payload,
-          binarypayload: binarypayload,
+          content,
+          binarypayload,
         });
       case PadlocalMessageType.Voice:
-        return plainToInstance(PadlocalImageMessageContent, {
+        return plainToInstance(PadlocalVoiceMessageContent, {
           type: PadlocalMessageContentType.VOICE,
-          content: payload,
-          binarypayload: binarypayload,
+          content,
+          binarypayload,
         });
       default:
         return plainToInstance(PadlocalUnknownMessageContent, {
@@ -107,73 +108,65 @@ export class MessageParserService {
   }
 
   private parseAppMessageContent(payload: string): PadlocalMessageContent {
-    try {
-      // this.logger.debug(payload);
-      payload = payload.replace('&lt;?xml version="1.0"?&gt;\n', '');
-      payload = decode(payload);
-      const appXml = this.parser.parse(payload);
+    payload = payload.replace('&lt;?xml version="1.0"?&gt;\n', '');
+    payload = decode(payload);
+    const appXml = this.parser.parse(payload);
 
-      const appMessageType = Number(appXml?.msg?.appmsg?.type);
+    const appMessageType = Number(appXml?.msg?.appmsg?.type);
 
-      switch (appMessageType) {
-        case PadlocalMessageType.ChatHistory: {
-          const chatHistoryRecords = this.parser.parse(
-            appXml?.msg?.appmsg?.recorditem,
-          );
-          return plainToInstance(PadlocalChatHistoryMessageContent, {
-            type: PadlocalMessageContentType.CHAT_HISTORY,
-            chatHistoryRecords,
-          });
-        }
-        case PadlocalMessageType.Refer: {
-          const referMessage = appXml?.msg?.appmsg?.refermsg || {};
-          const {
-            type: referMessageType,
-            svrid: referredMessageId,
-            chatusr,
-            content,
-          } = referMessage;
-          switch (referMessageType) {
-            case PadlocalMessageType.Text: {
-              return plainToInstance(PadlocalReferMessageContent, {
-                type: PadlocalMessageContentType.REFER,
-                fromUsername: chatusr,
-                text: appXml?.msg?.appmsg?.title,
-                referredMessageId,
-                referredContent: plainToInstance(PadlocalTextMessageContent, {
-                  type: PadlocalMessageContentType.TEXT,
-                  text: content,
-                }),
-              });
-            }
-            // TODO: other refer message types
-            default: {
-              return plainToInstance(PadlocalReferMessageContent, {
-                type: PadlocalMessageContentType.REFER,
-                fromUsername: chatusr,
-                text: appXml?.msg?.appmsg?.title,
-                referredMessageId,
-                referredContent: plainToInstance(
-                  PadlocalUnknownMessageContent,
-                  {
-                    type: PadlocalMessageContentType.UNKNOWN,
-                    messageType: referMessageType,
-                    payload: content,
-                  },
-                ),
-              });
-            }
+    switch (appMessageType) {
+      case PadlocalMessageType.ChatHistory: {
+        const chatHistoryRecords = this.parser.parse(
+          appXml?.msg?.appmsg?.recorditem,
+        );
+        return plainToInstance(PadlocalChatHistoryMessageContent, {
+          type: PadlocalMessageContentType.CHAT_HISTORY,
+          chatHistoryRecords,
+        });
+      }
+      case PadlocalMessageType.Refer: {
+        const referMessage = appXml?.msg?.appmsg?.refermsg || {};
+        const {
+          type: referMessageType,
+          svrid: referredMessageId,
+          chatusr,
+          content,
+        } = referMessage;
+        switch (referMessageType) {
+          case PadlocalMessageType.Text: {
+            return plainToInstance(PadlocalReferMessageContent, {
+              type: PadlocalMessageContentType.REFER,
+              fromUsername: chatusr,
+              text: appXml?.msg?.appmsg?.title,
+              referredMessageId,
+              referredContent: plainToInstance(PadlocalTextMessageContent, {
+                type: PadlocalMessageContentType.TEXT,
+                text: content,
+              }),
+            });
+          }
+          // TODO: other refer message types
+          default: {
+            return plainToInstance(PadlocalReferMessageContent, {
+              type: PadlocalMessageContentType.REFER,
+              fromUsername: chatusr,
+              text: appXml?.msg?.appmsg?.title,
+              referredMessageId,
+              referredContent: plainToInstance(PadlocalUnknownMessageContent, {
+                type: PadlocalMessageContentType.UNKNOWN,
+                messageType: referMessageType,
+                payload: content,
+              }),
+            });
           }
         }
-        default: {
-          return plainToInstance(PadlocalAppMessageContent, {
-            type: PadlocalMessageContentType.APP,
-            appXml,
-          });
-        }
       }
-    } catch (err) {
-      console.log('====parseAppMessageContent err:', err);
+      default: {
+        return plainToInstance(PadlocalAppMessageContent, {
+          type: PadlocalMessageContentType.APP,
+          appXml,
+        });
+      }
     }
   }
 

@@ -15,6 +15,7 @@ import { MessageParserService } from './parser.service';
 import {
   ACTIONS_OPTIONS,
   FRIEND_REQUEST_OPTIONS,
+  IMAGE_MESSAGE_OPTIONS,
   KICK_OUT_OPTIONS,
   LOGIN_QR_CODE_OPTIONS,
   LOGIN_START_OPTIONS,
@@ -23,6 +24,7 @@ import {
   NEW_MESSAGE_OPTIONS,
   NEW_RAW_MESSAGE_OPTIONS,
   SYNC_CONTACT_OPTIONS,
+  VOICE_MESSAGE_OPTIONS,
 } from './queues';
 import { ConfigModule } from '@nestjs/config';
 
@@ -36,6 +38,8 @@ const queues = [
   FRIEND_REQUEST_OPTIONS,
   NEW_MESSAGE_OPTIONS,
   NEW_RAW_MESSAGE_OPTIONS,
+  IMAGE_MESSAGE_OPTIONS,
+  VOICE_MESSAGE_OPTIONS,
   SYNC_CONTACT_OPTIONS,
 ];
 
