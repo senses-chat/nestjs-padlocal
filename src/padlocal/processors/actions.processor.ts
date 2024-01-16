@@ -1,13 +1,20 @@
-import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 
-import { PadlocalService } from '../../padlocal/padlocal.service';
-import { QUEUES } from '../config';
+import { ACTIONS } from '../queues';
+import { PadlocalService } from '../padlocal.service';
 
-@Processor('common', QUEUES.commonWorkerOptions)
-export class CommonProcessor extends WorkerHost {
-  private readonly logger = new Logger(CommonProcessor.name);
+@Processor(ACTIONS, {
+  concurrency: 1,
+  // rate limit
+  limiter: {
+    max: 1,
+    duration: 2000,
+  },
+})
+export class ActionsProcessor extends WorkerHost {
+  private readonly logger = new Logger(ActionsProcessor.name);
   constructor(private readonly padlocalService: PadlocalService) {
     super();
   }
@@ -42,7 +49,7 @@ export class CommonProcessor extends WorkerHost {
             job.data.username,
             job.data.input.voiceS3Path,
             job.data.input.voiceLength,
-            );
+          );
         }
         break;
       case 'addChatRoomMember':
@@ -55,10 +62,5 @@ export class CommonProcessor extends WorkerHost {
         }
         break;
     }
-  }
-
-  @OnWorkerEvent('completed')
-  onCompleted() {
-    // do some stuff
   }
 }

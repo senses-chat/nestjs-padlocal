@@ -1,28 +1,29 @@
-import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
-import { Inject, Logger } from '@nestjs/common';
+import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Job, Queue } from 'bullmq';
+import { Logger } from '@nestjs/common';
 
-import {
-  KeyValueStorageBase,
-  PADLOCAL_KV_STORAGE,
-  PrismaService,
-} from 'src/db';
-import { QueueService } from '../queue.service';
+import { DrizzleService } from '~/modules/drizzle';
+import { RedisService } from '~/modules/redis';
+import { wechatFriendshipRequest } from '~/modules/drizzle/schema';
 
-@Processor('newFriendRequest')
+import { FRIEND_REQUEST, NEW_FRIEND_REQUEST } from '../queues';
+
+@Processor(NEW_FRIEND_REQUEST, {
+  concurrency: 10,
+})
 export class NewFriendRequestProcessor extends WorkerHost {
   private readonly logger = new Logger(NewFriendRequestProcessor.name);
   constructor(
-    @Inject(PADLOCAL_KV_STORAGE)
-    private readonly kvStorage: KeyValueStorageBase,
-    private readonly prisma: PrismaService,
-    private readonly queueService: QueueService,
+    private readonly drizzleService: DrizzleService,
+    private readonly redisService: RedisService,
+    @InjectQueue(FRIEND_REQUEST)
+    private readonly friendRequestQueue: Queue,
   ) {
     super();
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
-    const loggedInUsername = await this.kvStorage.get(
+    const loggedInUsername = await this.redisService.client.get(
       `loggedInUser:${job.data.accountId}`,
     );
 
@@ -30,8 +31,9 @@ export class NewFriendRequestProcessor extends WorkerHost {
       throw new Error(`Account ${job.data.accountId} is not logged in`);
     }
 
-    const request = await this.prisma.wechatFriendshipRequest.create({
-      data: {
+    const request = await this.drizzleService.db
+      .insert(wechatFriendshipRequest)
+      .values({
         sourceUsername: loggedInUsername,
         username: job.data.friendRequest.fromUsername,
         encryptUsername: job.data.friendRequest.encryptUsername,
@@ -46,21 +48,16 @@ export class NewFriendRequestProcessor extends WorkerHost {
         province: job.data.friendRequest.province,
         country: job.data.friendRequest.country,
         payload: job.data.friendRequest.payload,
-      },
-    });
+      })
+      .returning();
 
     this.logger.verbose(
       `new friend request process: ${JSON.stringify(job.data)}`,
     );
 
-    await this.queueService.add('friendRequest', {
+    await this.friendRequestQueue.add('friendRequest', {
       accountId: job.data.accountId,
-      requestId: request.id,
+      requestId: request[0].id,
     });
-  }
-
-  @OnWorkerEvent('completed')
-  onCompleted() {
-    // do some stuff
   }
 }

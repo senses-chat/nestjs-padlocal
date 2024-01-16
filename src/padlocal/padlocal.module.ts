@@ -3,10 +3,10 @@ import { BullModule } from '@nestjs/bullmq';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
-import { RedisModule } from '@/modules/redis';
-import { MinioModule } from '@/modules/minio';
-import { OpenSearchModule } from '@/modules/opensearch';
-import { DrizzleModule } from '@/modules/drizzle';
+import { RedisModule } from '~/modules/redis';
+import { MinioModule } from '~/modules/minio';
+import { OpenSearchModule } from '~/modules/opensearch';
+import { DrizzleModule } from '~/modules/drizzle';
 
 import { processors } from './processors';
 import { PadlocalController } from './padlocal.controller';

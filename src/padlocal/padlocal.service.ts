@@ -21,13 +21,13 @@ import {
 } from 'padlocal-client-ts/dist/proto/padlocal_pb';
 import { and, eq } from 'drizzle-orm';
 
-import { RedisService } from '@/modules/redis';
-import { MinioService } from '@/modules/minio';
-import { DrizzleService } from '@/modules/drizzle';
+import { RedisService } from '~/modules/redis';
+import { MinioService } from '~/modules/minio';
+import { DrizzleService } from '~/modules/drizzle';
 import {
   padlocalAccount,
   wechatFriendshipRequest,
-} from '@/modules/drizzle/schema';
+} from '~/modules/drizzle/schema';
 
 import {
   KICK_OUT,

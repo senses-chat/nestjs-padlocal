@@ -6,7 +6,7 @@ import { NewFriendRequestProcessor } from './new-friend-request.processor';
 import { LoginQrcodeProcessor } from './login-qrcode.processor';
 import { LoginStartProcessor } from './login-start.processor';
 import { SyncContactProcessor } from './sync-contact.processor';
-import { CommonProcessor } from './common.processor';
+import { ActionsProcessor } from './actions.processor';
 import { FriendRequestProcessor } from './friend-request.processor';
 
 export const processors = [
@@ -18,6 +18,6 @@ export const processors = [
   LoginQrcodeProcessor,
   LoginStartProcessor,
   SyncContactProcessor,
-  CommonProcessor,
+  ActionsProcessor,
   FriendRequestProcessor,
 ];

@@ -2,7 +2,7 @@
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 
-// import { AuthMiddleware, AuthModule } from '@/modules/auth';
+// import { AuthMiddleware, AuthModule } from '~/modules/auth';
 
 export function getBullBoardModuleWithAuth() {
   const bullBoardModule = BullBoardModule.forRoot({
