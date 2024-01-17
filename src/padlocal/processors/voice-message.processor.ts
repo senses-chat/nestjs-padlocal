@@ -30,7 +30,7 @@ export class VoiceMessageProcessor extends WorkerHost {
   ) {
     super();
 
-    this.bucketName = this.configService.get<string>('minio.bucketName');
+    this.bucketName = this.configService.get<string>('padlocal.assetsBucketName');
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
@@ -56,7 +56,7 @@ export class VoiceMessageProcessor extends WorkerHost {
     );
 
     await this.minioService.putObject(
-      this.configService.get('minio.bucketName'),
+      this.configService.get('padlocal.assetsBucketName'),
       `padlocal/${binarypayloadName}`,
       Buffer.from(voiceData),
     );

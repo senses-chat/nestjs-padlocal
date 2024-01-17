@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
@@ -9,6 +10,7 @@ import { OpenSearchModule } from '~/modules/opensearch';
 import { DrizzleModule } from '~/modules/drizzle';
 
 import { processors } from './processors';
+import padlocalConfig from './padlocal.config';
 import { PadlocalController } from './padlocal.controller';
 import { PadlocalService } from './padlocal.service';
 import { MessageParserService } from './parser.service';
@@ -26,7 +28,6 @@ import {
   SYNC_CONTACT_OPTIONS,
   VOICE_MESSAGE_OPTIONS,
 } from './queues';
-import { ConfigModule } from '@nestjs/config';
 
 const queues = [
   ACTIONS_OPTIONS,
@@ -45,7 +46,7 @@ const queues = [
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forFeature(padlocalConfig),
     RedisModule,
     MinioModule,
     OpenSearchModule,

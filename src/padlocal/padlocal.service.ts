@@ -318,7 +318,7 @@ export class PadlocalService
     }
 
     const resStream = await this.minio.getObject(
-      this.configService.get('minio.bucketName'),
+      this.configService.get('padlocal.assetsBucketName'),
       voiceS3Path,
     );
     const buffers = [];
