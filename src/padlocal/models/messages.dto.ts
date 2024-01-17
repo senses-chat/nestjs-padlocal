@@ -63,6 +63,7 @@ export class PadlocalImageMessageContent extends PadlocalMessageContent {
 export class PadlocalVoiceMessageContent extends PadlocalMessageContent {
   content: string;
   binarypayload: string;
+  duration?: number;
 }
 
 export class PadlocalAppMessageContent extends PadlocalMessageContent {

@@ -31,7 +31,9 @@ export class ImageMessageProcessor extends WorkerHost {
   ) {
     super();
 
-    this.bucketName = this.configService.get<string>('padlocal.assetsBucketName');
+    this.bucketName = this.configService.get<string>(
+      'padlocal.assetsBucketName',
+    );
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
