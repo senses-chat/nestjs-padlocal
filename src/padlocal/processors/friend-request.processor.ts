@@ -33,7 +33,7 @@ export class FriendRequestProcessor extends WorkerHost {
     const request = await this.drizzleService.db
       .select()
       .from(wechatFriendshipRequest)
-      .where(eq(wechatFriendshipRequest.id, job.data.id))
+      .where(eq(wechatFriendshipRequest.id, job.data.requestId))
       .limit(1);
 
     this.logger.verbose(`friend request process: ${JSON.stringify(request)}`);
