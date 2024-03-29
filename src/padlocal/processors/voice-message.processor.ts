@@ -3,6 +3,7 @@ import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job, Queue } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { decode, decodeResult as DecodeResult } from 'silk-wasm';
+import { WaveFile } from 'wavefile';
 
 import { RedisService } from '~/modules/redis';
 import { MinioService } from '~/modules/minio';
@@ -45,7 +46,7 @@ export class VoiceMessageProcessor extends WorkerHost {
       `loggedInUser:${job.data.accountId}`,
     );
 
-    const binarypayloadName = `${loggedInUsername}/voices/${job.data.rawMessage.id}.pcm`;
+    const binarypayloadName = `${loggedInUsername}/voices/${job.data.rawMessage.id}.wav`;
 
     let content = rawMessage.content;
     if (job.data.rawMessage.fromusername.includes('@chatroom')) {
@@ -61,10 +62,19 @@ export class VoiceMessageProcessor extends WorkerHost {
 
     const decodeResult: DecodeResult = await decode(voiceData, this.sampleRate);
 
+    // convert the pcm uint8array into s16le array.
+    const pcmData = new Int16Array(decodeResult.data.length / 2);
+    for (let i = 0; i < pcmData.length; i++) {
+      pcmData[i] =
+        decodeResult.data[i * 2] + (decodeResult.data[i * 2 + 1] << 8);
+    }
+    const wavFile = new WaveFile();
+    wavFile.fromScratch(1, this.sampleRate, '16', pcmData);
+
     await this.minioService.putObject(
       this.configService.get('padlocal.assetsBucketName'),
       `padlocal/${binarypayloadName}`,
-      Buffer.from(decodeResult.data),
+      Buffer.from(wavFile.toBuffer()),
     );
 
     newMessage.content.binarypayload = `s3://${this.bucketName}/padlocal/${binarypayloadName}`;
