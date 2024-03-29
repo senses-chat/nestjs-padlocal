@@ -20,7 +20,7 @@ const streams: RegisterQueueOptions['streams'] = {
 };
 
 const defaultJobOptions: RegisterQueueOptions['defaultJobOptions'] = {
-  removeOnComplete: false,
+  removeOnComplete: true,
   removeOnFail: false,
   attempts: 10,
   backoff: {
