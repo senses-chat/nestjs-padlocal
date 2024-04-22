@@ -16,6 +16,7 @@ import { PadlocalService } from './padlocal.service';
 import { MessageParserService } from './parser.service';
 import {
   ACTIONS_OPTIONS,
+  FILE_MESSAGE_OPTIONS,
   FRIEND_REQUEST_OPTIONS,
   IMAGE_MESSAGE_OPTIONS,
   KICK_OUT_OPTIONS,
@@ -41,6 +42,7 @@ const queues = [
   NEW_RAW_MESSAGE_OPTIONS,
   IMAGE_MESSAGE_OPTIONS,
   VOICE_MESSAGE_OPTIONS,
+  FILE_MESSAGE_OPTIONS,
   SYNC_CONTACT_OPTIONS,
 ];
 
