@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 export enum PadlocalMessageType {
   Text = 1,
   Image = 3,
+  Attach = 6,
   ChatHistory = 19,
   Voice = 34,
   VerifyMsg = 37,
@@ -38,6 +39,7 @@ export enum PadlocalMessageContentType {
   FRIENDSHIP_REQUEST = 'FRIENDSHIP_REQUEST',
   IMAGE = 'IMAGE',
   VOICE = 'VOICE',
+  FILE = 'FILE',
 }
 
 export abstract class PadlocalMessageContent {
@@ -68,6 +70,12 @@ export class PadlocalVoiceMessageContent extends PadlocalMessageContent {
 
 export class PadlocalAppMessageContent extends PadlocalMessageContent {
   appXml: any;
+}
+
+export class PadlocalFileMessageContent extends PadlocalMessageContent {
+  title: string;
+  url?: string;
+  appAttachPayload: any;
 }
 
 export class PadlocalChatHistoryMessageContent extends PadlocalMessageContent {

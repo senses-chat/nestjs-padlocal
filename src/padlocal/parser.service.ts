@@ -8,6 +8,7 @@ import { decode } from 'he';
 import {
   PadlocalAppMessageContent,
   PadlocalChatHistoryMessageContent,
+  PadlocalFileMessageContent,
   PadlocalFriendshipRequestMessageContent,
   PadlocalImageMessageContent,
   PadlocalMessage,
@@ -115,6 +116,15 @@ export class MessageParserService {
     const appMessageType = Number(appXml?.msg?.appmsg?.type);
 
     switch (appMessageType) {
+      case PadlocalMessageType.Attach: {
+        const title = appXml?.msg?.appmsg?.title;
+        const appAttachPayload = appXml?.msg?.appmsg?.appattach;
+        return plainToInstance(PadlocalFileMessageContent, {
+          type: PadlocalMessageContentType.FILE,
+          title,
+          appAttachPayload,
+        });
+      }
       case PadlocalMessageType.ChatHistory: {
         const chatHistoryRecords = this.parser.parse(
           appXml?.msg?.appmsg?.recorditem,

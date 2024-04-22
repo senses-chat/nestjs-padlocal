@@ -11,6 +11,7 @@ export const NEW_MESSAGE = 'new-message';
 export const NEW_RAW_MESSAGE = 'new-raw-message';
 export const IMAGE_MESSAGE = 'image-message';
 export const VOICE_MESSAGE = 'voice-message';
+export const FILE_MESSAGE = 'file-message';
 export const SYNC_CONTACT = 'sync-contact';
 
 const streams: RegisterQueueOptions['streams'] = {
@@ -91,6 +92,12 @@ export const IMAGE_MESSAGE_OPTIONS: RegisterQueueOptions = {
 
 export const VOICE_MESSAGE_OPTIONS: RegisterQueueOptions = {
   name: VOICE_MESSAGE,
+  streams,
+  defaultJobOptions,
+};
+
+export const FILE_MESSAGE_OPTIONS: RegisterQueueOptions = {
+  name: FILE_MESSAGE,
   streams,
   defaultJobOptions,
 };

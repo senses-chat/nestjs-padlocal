@@ -10,6 +10,7 @@ import { ActionsProcessor } from './actions.processor';
 import { FriendRequestProcessor } from './friend-request.processor';
 import { ImageMessageProcessor } from './image-message.processor';
 import { VoiceMessageProcessor } from './voice-message.processor';
+import { FileMessageProcessor } from './file-message.processor';
 
 export const processors = [
   KickoutProcessor,
@@ -18,6 +19,7 @@ export const processors = [
   NewMessageProcessor,
   ImageMessageProcessor,
   VoiceMessageProcessor,
+  FileMessageProcessor,
   NewFriendRequestProcessor,
   LoginQrcodeProcessor,
   LoginStartProcessor,

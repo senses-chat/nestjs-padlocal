@@ -305,6 +305,20 @@ export class PadlocalService
     );
   }
 
+  public async getMessageAttach(
+    accountId: number,
+    messageContent: string,
+    messageToUserName: string,
+  ) {
+    const client = this.clients.get(accountId);
+
+    if (!client) {
+      throw new Error(`Account ${accountId} not found`);
+    }
+
+    return client.api.getMessageAttach(messageContent, messageToUserName);
+  }
+
   public async sendMessageVoice(
     accountId: number,
     messageToUserName: string,
