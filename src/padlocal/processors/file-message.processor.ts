@@ -44,7 +44,12 @@ export class FileMessageProcessor extends WorkerHost {
       `loggedInUser:${job.data.accountId}`,
     );
 
-    const binarypayloadName = `${loggedInUsername}/files/${job.data.rawMessage.id}.${job.data.newMessage.appAttachPayload?.fileext}`;
+    const binarypayloadName = `${loggedInUsername}/files/${
+      job.data.rawMessage.id
+    }.${
+      job.data.newMessage.appAttachPayload?.fileext ??
+      job.data.newMessage.title.split('.').pop()
+    }`;
 
     let content = rawMessage.content;
     if (job.data.rawMessage.fromusername.includes('@chatroom')) {
