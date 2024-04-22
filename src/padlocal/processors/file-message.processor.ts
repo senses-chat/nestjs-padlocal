@@ -48,7 +48,7 @@ export class FileMessageProcessor extends WorkerHost {
       job.data.rawMessage.id
     }.${
       job.data.newMessage.appAttachPayload?.fileext ??
-      job.data.newMessage.title.split('.').pop()
+      job.data.newMessage.content.title.split('.').pop()
     }`;
 
     let content = rawMessage.content;
